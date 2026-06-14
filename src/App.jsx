@@ -4,10 +4,11 @@ import Login from "./auth/login";
 function App() { 
   return (  
         <BrowserRouter>
-      <Routes>
-        <Route path="/register" element={<Register />} />
+      <Routes> 
+                <Route path="/" element={<Register />} />
+   <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-      </Routes>
+      </Routes> 
     </BrowserRouter>
   //  <> 
 //<Register />    
