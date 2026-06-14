@@ -1,9 +1,18 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./auth/register"; 
+import Login from "./auth/login";
 function App() { 
   return (  
-    <> 
-<Register />    
-</>
+        <BrowserRouter>
+      <Routes> 
+                <Route path="/" element={<Register />} />
+   <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes> 
+    </BrowserRouter>
+  //  <> 
+//<Register />    
+//</>
     );
 }
 
