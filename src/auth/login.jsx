@@ -12,9 +12,11 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
   // Handle Login API Request
   async function handleLogin() {
     setErrors({});
+
     //email validation
     if (!email.trim()) {
       setErrors({ email: "Email is required" });
@@ -25,6 +27,7 @@ function Login() {
       setErrors({ email: "Please enter a valid email address" });
       return;
     }
+
     //password validation
     if (!password.trim()) {
       setErrors({ password: "Password is required" });
@@ -37,6 +40,7 @@ function Login() {
       });
       return;
     }
+
     // If validation passes, proceed with API call
     try {
       setLoading(true);
@@ -49,6 +53,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           email,
           password,
@@ -76,7 +81,7 @@ function Login() {
       if (response.ok) {
         alert(data.message);
 
-        navigate("/");
+        navigate("/request");
       } else {
         alert(data.message);
       }
@@ -90,7 +95,6 @@ function Login() {
   }
   return (
     <div className="min-h-screen bg-red-50">
-
       {/* Navbar */}
 
       <nav className="bg-white px-8 py-5 border-b border-red-100 shadow-md">
@@ -107,7 +111,6 @@ function Login() {
       {/* Main Section */}
 
       <div className="flex flex-col lg:flex-row mt-8 mb-2">
-
         {/* Left Section */}
 
         <div className="hidden lg:block lg:w-1/2 p-8 lg:p-16">
