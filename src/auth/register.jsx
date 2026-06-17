@@ -1,6 +1,6 @@
 import states from "./states.json"; 
 // import { useNavigate } from "react-router-dom";                 
-import blood from "../assets/bloodicon.png";
+import blood from "../assets/bloodicon.png"; 
 import care from "../assets/care.png";
 import { useState, useEffect, useRef } from "react";
 import { BACKEND_BASE_URL } from "../../config";
