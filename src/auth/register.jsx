@@ -1,10 +1,12 @@
-import states from "./states.json";
-import blood from "../assets/bloodicon.png";
+import states from "./states.json"; 
+// import { useNavigate } from "react-router-dom";                 
+import blood from "../assets/bloodicon.png"; 
 import care from "../assets/care.png";
 import { useState, useEffect, useRef } from "react";
 import { BACKEND_BASE_URL } from "../../config";
 
-function Register() {
+function Register() {                                          
+  // const navigate = useNavigate();                                    
   const [showPassword, setShowPassword] = useState(false);
   function togglePassword() {
     setShowPassword(!showPassword);
@@ -12,7 +14,7 @@ function Register() {
   const [showOTP, setShowOTP] = useState(false);
   function toggleOTP() {
     setShowOTP(!showOTP);
-  }
+  } 
   const [timer, setTimer] = useState(180); // OTP expires after 3 minutes
   const [resendTimer, setResendTimer] = useState(30); // Resend cooldown
   const [otpSent, setOtpSent] = useState(false);
@@ -24,9 +26,19 @@ function Register() {
   const [password, setPassword] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [district, setDistrict] = useState("");
-  const [pincode, setPincode] = useState("");
+  const [pincode, setPincode] = useState(""); 
+  const hasUserStartedTyping =
+  email ||
+  password || 
+  otp  ||                                                                     
+  phone ||
+  selectedState ||
+  district ||
+  pincode;                             
   const [token, setToken] = useState("");
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({}); 
+
+
   useEffect(() => {
     // useEffect() runs whenever one of its dependencies changes like the OTP sent or the timer
     let interval;
@@ -213,9 +225,9 @@ if (!/\S+@\S+\.\S+/.test(email)) {
 
   return (     
     <div className="min-h-screen  bg-red-50">
-      <nav className="bg-white px-4 sm:px-10 py-5 flex justify-between items-center">
-        <h1 className=" text-4xl font-bold">
-          Red<span className="text-red-600">Link</span>
+      <nav className="bg-white px-4 sm:px-10 py-5 flex justify-between items-center shadow-md">
+        <h1 className=" text-4xl font-bold"> 
+          <span className="text-red-500">RED</span><span className="text-black">LINK</span>  
           <p className="text-gray-600 text-sm mt-1">Blood Donor Network </p>
         </h1>
       </nav>
@@ -223,7 +235,7 @@ if (!/\S+@\S+\.\S+/.test(email)) {
       <div className="flex flex-col lg:flex-row mt-8 mb-2">
         {/*  Left Section */}
         <div className="hidden lg:block lg:w-1/2 p-8 lg:p-16">
-          <h1 className="text-3xl font-bold ">
+          <h1 className="text-5xl font-bold ">
             Be a<span className="text-red-500"> Life Saver </span>
           </h1>
           <h2 className="text-xl font-bold mt-1">Save Lives, Donate Blood</h2>
@@ -254,7 +266,7 @@ if (!/\S+@\S+\.\S+/.test(email)) {
         {/* Right Section */}
         <div className="w-full lg:w-1/2 flex justify-center px-4">
           <div className="bg-white shadow-xl rounded-3xl p-6 sm:p-8 lg:p-10 w-full max-w-3xl">
-            <h1 className="text-3xl sm:text-5xl font-bold">SIGN UP</h1>
+            <h1 className="text-3xl sm:text-5xl font-bold text-red-600">SIGN UP</h1>
             <p className="text-gray-500 mt-3 mb-5">
               Fill in the details below to register
             </p>
@@ -584,20 +596,30 @@ if (!/\S+@\S+\.\S+/.test(email)) {
                 )}
               </div>
             </div>
-            <div className="flex justify-center mt-10">
-              <button
-                onClick={handleRegister}
-                className="bg-red-600 text-white w-full py-4 sm:py-5 rounded-xl text-xl sm:text-2xl mt-8 hover:bg-red-700 transition"
-              >
+            <div className="flex justify-center mt-10"> 
+  <button
+    onClick={handleRegister}
+    disabled={!hasUserStartedTyping}
+    className={`w-full py-4 sm:py-5 rounded-xl text-xl sm:text-2xl mt-8 text-white transition
+      ${
+        hasUserStartedTyping
+          ? "bg-red-600 hover:bg-red-700" 
+          : "bg-gray-400 cursor-not-allowed"
+      }`}
+  >                       
+
                 <i className="fa-solid fa-user-plus"></i>
                 REGISTER
               </button>
             </div>
             <p className="flex flex-wrap justify-center mt-4 text-center">
               Already have an account?
-              <span className="text-red-600 font-bold ml-2 cursor-pointer hover:bg-red-300 transition">
+              <span 
+                // onClick={() => navigate("/login")}
+
+              className="text-red-600 font-bold ml-2 cursor-pointer hover:bg-red-300 transition">
                 Login
-              </span>
+              </span> 
             </p>
           </div>
         </div>
