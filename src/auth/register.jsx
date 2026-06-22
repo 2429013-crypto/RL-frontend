@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { BACKEND_BASE_URL } from "../../config";
 
 function Register() {                                          
-   const navigate = useNavigate();                                    
+  const navigate = useNavigate();                                    
   const [showPassword, setShowPassword] = useState(false);
   function togglePassword() {
     setShowPassword(!showPassword);
@@ -121,6 +121,7 @@ if (!/\S+@\S+\.\S+/.test(email)) {
       console.log("RESPONSE :: ", response);
 
       const data = await response.json();
+      console.log("VERIFY OTP DATA:", JSON.stringify(data));
       // const text = await response.text();
       // console.log("Response body:", text);
 
@@ -212,7 +213,9 @@ if (!/\S+@\S+\.\S+/.test(email)) {
             navigate("/login");                                                             
       // Optional: remove token after successful registration
         localStorage.removeItem("registerToken");
+        navigate("/login");
       } else {
+        
         alert(data.message);
       }
     } catch (error) {
@@ -613,7 +616,7 @@ if (!/\S+@\S+\.\S+/.test(email)) {
             <p className="flex flex-wrap justify-center mt-4 text-center">
               Already have an account?
               <span 
-                 onClick={() => navigate("/login")}
+                onClick={() => navigate("/login")}
 
               className="text-red-600 font-bold ml-2 cursor-pointer hover:bg-red-300 transition">
                 Login

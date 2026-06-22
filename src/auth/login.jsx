@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import handsymbol from "../assets/handsymbol.png";
@@ -12,31 +12,51 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function checkIfAlreadyLoggedIn() {
+      try {
+        const res = await fetch(`${BACKEND_BASE_URL}/api/auth/me`, {
+          credentials: "include",
+        });
+        if (res.ok) {
+          navigate("/profile"); 
+        }
+      } catch {
+      
+      }
+    }
+    checkIfAlreadyLoggedIn();
+  }, []);
   // Handle Login API Request
   async function handleLogin() {
     setErrors({});
-    //email validation
+
+    // email validation
     if (!email.trim()) {
-      setErrors({ email: "Email is required" });
-      return;
+       setErrors({ email: "Email is required" });
+       return;
+     }
+
+     if (!/\S+@\S+\.\S+/.test(email)) {
+       setErrors({ email: "Please enter a valid email address" });
+       return;
     }
 
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setErrors({ email: "Please enter a valid email address" });
-      return;
-    }
-    //password validation
+     //password validation
     if (!password.trim()) {
       setErrors({ password: "Password is required" });
-      return;
-    }
+       return;
+     }
 
     if (password.length < 6) {
       setErrors({
         password: "Password must be at least 6 characters long",
       });
       return;
-    }
+     }
+
+    console.log("Attempting logins...");
     // If validation passes, proceed with API call
     try {
       setLoading(true);
@@ -49,6 +69,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           email,
           password,
@@ -76,7 +97,7 @@ function Login() {
       if (response.ok) {
         alert(data.message);
 
-        navigate("/");
+        navigate("/profile");
       } else {
         alert(data.message);
       }
@@ -90,7 +111,6 @@ function Login() {
   }
   return (
     <div className="min-h-screen bg-red-50">
-
       {/* Navbar */}
 
       <nav className="bg-white px-8 py-5 border-b border-red-100 shadow-md">
@@ -107,7 +127,6 @@ function Login() {
       {/* Main Section */}
 
       <div className="flex flex-col lg:flex-row mt-8 mb-2">
-
         {/* Left Section */}
 
         <div className="hidden lg:block lg:w-1/2 p-8 lg:p-16">
