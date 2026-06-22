@@ -1,24 +1,23 @@
 import states from "./states.json";
-import React, {useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-export const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-// import { BACKEND_BASE_URL } from "../../config"; 
+//export const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+import { BACKEND_BASE_URL } from "../../config";
 const Profile = () => {
   const navigate = useNavigate();
   //formData is just an object in state that stores all your form values
   //setFormData is the function used to update formData
   const [formData, setFormData] = useState({
-    userId:"",  
     fullName: "",
     dateOfBirth: "",
     gender: "",
-    bloodGroup: "",                        
+    bloodGroup: "",
     occupation: "",
     profilePhoto: null,
     address: "",
     city: "",
     state: "",
-    pinCode: "",                                  
+    pinCode: "",
     weight: "",
     medicalConditions: "",
     currentMedications: "",
@@ -52,68 +51,72 @@ const Profile = () => {
   };
 
   const [photoPreview, setPhotoPreview] = useState(null);
-const fileInputRef = useRef(null);
- const handleFileChange = (e) => {
-  const file = e.target.files[0];
+  const fileInputRef = useRef(null);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
 
-  if (file) {
-    setFormData((prev) => ({
-      ...prev,
-      profilePhoto: file,
-    }));
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        profilePhoto: file,
+      }));
 
-    setPhotoPreview(URL.createObjectURL(file));
-  }
-};
+      setPhotoPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!formData.profilePhoto) {
-    alert("Please upload a profile photo.");
-    return;
-  }
-
-  const payload = new FormData();
-  payload.append("userId", formData.userId);
-  payload.append("fullName", formData.fullName);
-  payload.append("dateOfBirth", formData.dateOfBirth);
-  payload.append("gender", formData.gender);
-  payload.append("bloodGroup", formData.bloodGroup);
-  payload.append("occupation", formData.occupation);
-  payload.append("profilePhoto", formData.profilePhoto);
-  payload.append("address", formData.address);
-  payload.append("city", formData.city);
-  payload.append("state", formData.state);
-  payload.append("pinCode", formData.pinCode);
-  payload.append("weight", formData.weight);
-  payload.append("medicalConditions", formData.medicalConditions);
-  payload.append("currentMedications", formData.currentMedications);
-  payload.append("lastDonationDate", formData.lastDonationDate);
-  payload.append("receiveAlerts", formData.receiveAlerts);
-  payload.append("volunteerParticipation", formData.volunteerParticipation);
-
-  try {
-    console.log("Submitting to:", `${BACKEND_BASE_URL}/api/profile/create`);
-
-    const response = await fetch(`${BACKEND_BASE_URL}/api/profile/create`, {
-      method: "POST",
-      body: payload,
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      alert(data.message);
-      navigate("/dashboard"); 
-    } else {
-      alert(`Server error: ${data.message}`);
+    if (!formData.profilePhoto) {
+      alert("Please upload a profile photo.");
+      return;
     }
-  } catch (error) {
-    console.error("Submit failed:", error);
-    alert(`Network error: ${error.message}`);
-  }
-}; 
+
+    const payload = new FormData();
+
+    payload.append("fullName", formData.fullName);
+    payload.append("dateOfBirth", formData.dateOfBirth);
+    payload.append("gender", formData.gender);
+    payload.append("bloodGroup", formData.bloodGroup);
+    payload.append("occupation", formData.occupation);
+    payload.append("profilePhoto", formData.profilePhoto);
+    payload.append("address", formData.address);
+    payload.append("city", formData.city);
+    payload.append("state", formData.state);
+    payload.append("pinCode", formData.pinCode);
+    payload.append("weight", formData.weight);
+    payload.append("medicalConditions", formData.medicalConditions);
+    payload.append("currentMedications", formData.currentMedications);
+    payload.append("lastDonationDate", formData.lastDonationDate);
+    payload.append("receiveAlerts", formData.receiveAlerts);
+    payload.append("volunteerParticipation", formData.volunteerParticipation);
+
+    try {
+      console.log("Submitting to:", `${BACKEND_BASE_URL}/api/profile/create`);
+
+      const response = await fetch(`${BACKEND_BASE_URL}/api/profile/create`, {
+        method: "POST",
+        credentials: "include",
+        body: payload,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message);
+        navigate("/request");
+      } else if (data.message === "Profile already exists") {
+        alert("You already have a profile.");
+        navigate("/request");
+      } else {
+        alert(`Server error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Submit failed:", error);
+      alert(`Network error: ${error.message}`);
+    }
+  };
 
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
@@ -212,35 +215,6 @@ const fileInputRef = useRef(null);
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
-          {/* <div className="flex items-center justify-center gap-0 mt-8">
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center">
-                1
-              </div>
-              <span className="text-sm mt-2 text-red-600">
-                Personal Information
-              </span>
-            </div>
-          </div> */}
-
-          {/* <div className="w-52 h-1 bg-red-600"></div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center">
-              2
-            </div>
-            <span className="text-sm mt-2">Health Information</span>
-          </div>
-
-          <div className="w-52 h-1 bg-red-600"></div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 rounded-full border bg-red-600 text-white flex items-center justify-center">
-              3
-            </div>
-
-            <span className="text-sm mt-2">Preferences</span>
-          </div> */}
         </div>
       </div>
 
@@ -415,81 +389,79 @@ const fileInputRef = useRef(null);
 
                     {/* Profile Photo Upload */}
                     <div className="md:w-1/2">
-  <label className="block text-gray-700 font-medium mb-2">
-    Profile Photo
-  </label>
+                      <label className="block text-gray-700 font-medium mb-2">
+                        Profile Photo
+                      </label>
 
-  <label className="flex flex-col items-center justify-center border-2 border-dashed border-red-200 rounded-xl p-5 cursor-pointer hover:bg-red-50 transition relative overflow-hidden">
+                      <label className="flex flex-col items-center justify-center border-2 border-dashed border-red-200 rounded-xl p-5 cursor-pointer hover:bg-red-50 transition relative overflow-hidden">
+                        {/* hidden input */}
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept=".jpg,.jpeg,.png"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
 
-    {/* hidden input */}
-  <input
-  ref={fileInputRef}
-  type="file"
-  accept=".jpg,.jpeg,.png"
-  className="hidden"
-  onChange={handleFileChange}
-/>
+                        {/* IF IMAGE EXISTS */}
+                        {photoPreview ? (
+                          <div className="relative">
+                            <img
+                              src={photoPreview}
+                              alt="Profile"
+                              className="w-24 h-24 rounded-full object-cover border-2 border-red-300 shadow-md"
+                            />
 
-    {/* IF IMAGE EXISTS */}
-    {photoPreview ? (
-      <div className="relative">
-        <img
-          src={photoPreview}
-          alt="Profile"
-          className="w-24 h-24 rounded-full object-cover border-2 border-red-300 shadow-md"
-        />
+                            {/* REMOVE BUTTON */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
 
-        {/* REMOVE BUTTON */}
-       <button
-  type="button"
-  onClick={(e) => {
-    e.preventDefault();
+                                setPhotoPreview(null);
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  profilePhoto: null,
+                                }));
 
-    setPhotoPreview(null);
-    setFormData((prev) => ({
-      ...prev,
-      profilePhoto: null,
-    }));
+                                // IMPORTANT: reset file input
+                                if (fileInputRef.current) {
+                                  fileInputRef.current.value = "";
+                                }
+                              }}
+                              className="absolute -top-2 -right-2 bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-sm shadow-md hover:bg-red-700 cursor-pointer"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-2xl mb-2">
+                              👤
+                            </div>
 
-    // IMPORTANT: reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  }}
-  className="absolute -top-2 -right-2 bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-sm shadow-md hover:bg-red-700 cursor-pointer"
->
-  ✕
-</button>
-      </div>
-    ) : (
-      <>
-        <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-2xl mb-2">
-          👤
-        </div>
+                            <span className="font-medium text-gray-700">
+                              Upload Profile Photo
+                            </span>
 
-        <span className="font-medium text-gray-700">
-          Upload Profile Photo
-        </span>
+                            <span className="text-xs text-gray-500 mt-1">
+                              JPG, PNG (Max 5 MB)
+                            </span>
 
-        <span className="text-xs text-gray-500 mt-1">
-          JPG, PNG (Max 5 MB)
-        </span>
+                            <span className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg text-sm">
+                              Choose File
+                            </span>
+                          </>
+                        )}
+                      </label>
 
-        <span className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg text-sm">
-          Choose File
-        </span>
-      </>
-    )}
-
-  </label>
-
-  {/* ERROR */}
-  {errors?.profilePhoto && (
-    <p className="text-red-500 text-sm mt-2 text-center">
-      {errors.profilePhoto}
-    </p>
-  )}
-</div>
+                      {/* ERROR */}
+                      {errors?.profilePhoto && (
+                        <p className="text-red-500 text-sm mt-2 text-center">
+                          {errors.profilePhoto}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </>
