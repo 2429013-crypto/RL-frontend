@@ -30,7 +30,7 @@ function Register() {
   const hasUserStartedTyping =
   email ||
   password || 
-  otp  ||                                                                     
+  otp  ||                                                                       
   phone ||
   selectedState ||
   district ||
@@ -77,7 +77,7 @@ if (!/\S+@\S+\.\S+/.test(email)) {
   alert("Please enter a valid email address");
   return;
 } 
-      const response = await fetch(`${BACKEND_BASE_URL}/api/auth/send-otp`, {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/auth/send-otp`, { 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
