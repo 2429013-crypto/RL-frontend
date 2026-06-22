@@ -504,7 +504,7 @@ const fileInputRef = useRef(null);
         </span>
 
         <span className="text-xs text-gray-500 mt-1">
-          JPG, PNG (Max 5 MB)
+          JPG, PNG (Max 2 MB)
         </span>
 
         <span className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg text-sm">
@@ -684,7 +684,7 @@ const fileInputRef = useRef(null);
                           value={formData.currentMedications}
                           onChange={handleChange}
                         />
-                      </div>
+                      </div>  
 
                       <div>
                         <label className="block text-gray-700 font-medium mb-2">
@@ -693,11 +693,12 @@ const fileInputRef = useRef(null);
 
                         <input
                           className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                          type="date"
-                          name="lastDonationDate"
+                          type="date" 
+                        name="lastDonationDate" 
+                         // placeholder="DD/MM/YYYY"
                           value={formData.lastDonationDate}
-                          onChange={handleChange}
-                        />
+                          onChange={handleChange} 
+                           />
                       </div>
                     </div>
                   </div>
@@ -804,7 +805,7 @@ const fileInputRef = useRef(null);
     Login
   </span>
 </p>  
-    </div>
+    </div> 
   );
 };
 export default Profile;
