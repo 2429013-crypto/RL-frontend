@@ -4,7 +4,7 @@ import Login from "./auth/login";
 import Profile from "./auth/profile"; 
 function App() { 
   return (  
-        <BrowserRouter>
+        <BrowserRouter> 
       <Routes> 
                 <Route path="/" element={<Register />} />
    <Route path="/register" element={<Register />} />

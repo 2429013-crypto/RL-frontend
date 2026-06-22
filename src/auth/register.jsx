@@ -1,12 +1,12 @@
 import states from "./states.json"; 
-// import { useNavigate } from "react-router-dom";                 
+import { useNavigate } from "react-router-dom";                 
 import blood from "../assets/bloodicon.png"; 
 import care from "../assets/care.png";
 import { useState, useEffect, useRef } from "react";
 import { BACKEND_BASE_URL } from "../../config";
 
 function Register() {                                          
-  // const navigate = useNavigate();                                    
+   const navigate = useNavigate();                                    
   const [showPassword, setShowPassword] = useState(false);
   function togglePassword() {
     setShowPassword(!showPassword);
@@ -34,12 +34,10 @@ function Register() {
   phone ||
   selectedState ||
   district ||
-  pincode;                             
-  const [token, setToken] = useState("");
-  const [errors, setErrors] = useState({}); 
-
-
-  useEffect(() => {
+  pincode;                                                              
+  const [token, setToken] = useState("");                                 
+  const [errors, setErrors] = useState({});                                
+   useEffect(() => {
     // useEffect() runs whenever one of its dependencies changes like the OTP sent or the timer
     let interval;
 
@@ -210,17 +208,17 @@ if (!/\S+@\S+\.\S+/.test(email)) {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Registration Successful!");
-
-        // Optional: remove token after successful registration
+        alert("Registration Successful!");  
+            navigate("/login");                                                             
+      // Optional: remove token after successful registration
         localStorage.removeItem("registerToken");
       } else {
         alert(data.message);
       }
     } catch (error) {
       console.error(error);
-      alert("Something went wrong!");
-    }
+      alert("Something went wrong!"); 
+     }
   }
 
   return (     
@@ -615,7 +613,7 @@ if (!/\S+@\S+\.\S+/.test(email)) {
             <p className="flex flex-wrap justify-center mt-4 text-center">
               Already have an account?
               <span 
-                // onClick={() => navigate("/login")}
+                 onClick={() => navigate("/login")}
 
               className="text-red-600 font-bold ml-2 cursor-pointer hover:bg-red-300 transition">
                 Login
