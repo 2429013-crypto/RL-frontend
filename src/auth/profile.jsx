@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 //export const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 import { BACKEND_BASE_URL } from "../../config";
 const Profile = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   //formData is just an object in state that stores all your form values
   //setFormData is the function used to update formData
   const [formData, setFormData] = useState({
@@ -13,7 +13,7 @@ const Profile = () => {
     gender: "",
     bloodGroup: "",
     occupation: "",
-    profilePhoto: null,
+    profilePhoto: null,                   
     address: "",
     city: "",
     state: "",
@@ -176,22 +176,54 @@ const Profile = () => {
           <span className="text-red-500">RED</span>
           <span className="text-black">LINK</span>
           <p className="text-gray-600 text-sm mt-1">Blood Donor Network </p>
-        </h1>
-      </nav>
+        </h1>                                                                     
+          {/* Complete Profile Section */}
+  <div
+    onClick={() => navigate("/profile")}
+    className="flex items-center gap-3 cursor-pointer"
+  >
+    <div className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center shadow-sm">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-7 h-7 text-gray-500"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z"
+        />
+      </svg>
+    </div>
+
+    <div>                                                                                 
+      <p className="text-sm  text-gray-500">
+        Welcome
+      </p>
+      <p className="font-semibold text-red-600 hover:underline">
+        Complete Your Profile
+      </p>
+    </div>
+  </div>                                                                                 
+   </nav>        
       {/* Hero section */}
 
       <div className="max-w-5xl mx-auto text-center mb-10">
         {/* Heading */}
-        <h1 className="text-5xl lg:text-6xl font-extrabold text-red-600 tracking-tight">
-          Complete Your Profile
-        </h1>
-
-        {/* Subtitle */}
-        <p className="text-gray-500 text-lg mt-3">
-          Your information can help save lives in emergency situations ❤️
-        </p>
-
-        {/* Progress Card */}
+  
+          <h1 className="text-4xl lg:text-5xl font-bold">
+    <span className="text-red-600">Complete</span>{" "}                                        
+    <span className="text-gray-700">Your Profile</span>
+  </h1>         
+ <div className="w-20 h-1 bg-red-500 mx-auto mt-3 rounded-full"></div>
+  {/* Subtitle */}
+        <p className="text-gray-500 text-sm mt-3">
+     Your information helps us connect the right people at the right time ❤️                 
+          </p>                                                                                 
+      {/* Progress Card */}
         <div className="mt-8 bg-white rounded-3xl shadow-lg p-6 border border-gray-100">
           {/* Percentage */}
           <div className="flex flex-col justify-between items-center mb-3">
@@ -199,8 +231,8 @@ const Profile = () => {
               Profile Completion
             </h3>
 
-            <p className="text-sm text-gray-500">
-              Complete all sections to become an active donor
+            <p className="text-sm text-gray-500">                                                                                                       
+            Complete your profile to help save lives during emergency situations                          
             </p>
 
             <div className="text-3xl font-bold text-red-600">
@@ -624,7 +656,7 @@ const Profile = () => {
                           value={formData.currentMedications}
                           onChange={handleChange}
                         />
-                      </div>
+                      </div>  
 
                       <div>
                         <label className="block text-gray-700 font-medium mb-2">
@@ -633,11 +665,12 @@ const Profile = () => {
 
                         <input
                           className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
-                          type="date"
-                          name="lastDonationDate"
+                          type="date" 
+                        name="lastDonationDate" 
+                         // placeholder="DD/MM/YYYY"
                           value={formData.lastDonationDate}
-                          onChange={handleChange}
-                        />
+                          onChange={handleChange} 
+                           />
                       </div>
                     </div>
                   </div>
@@ -731,11 +764,20 @@ const Profile = () => {
         {/* closes max-w-2xl mx-auto flex flex-col gap-4 */}
       </form>
 
-      <p className="text-center text-sm text-gray-500 my-5">
+      <p className="text-center text-sm text-gray-500 mt-1 mb-1 my-5">
         🔒 Your data is secure and only used for emergency blood donation
         requests.
-      </p>
-    </div>
+      </p> 
+      <p className="flex flex-wrap justify-center  mb-5 text-center">
+  Already signed in with another account?
+  <span
+    onClick={() => navigate("/login")}
+    className="text-red-600 font-bold ml-2 cursor-pointer hover:bg-red-300 transition"
+  >
+    Login
+  </span>
+</p>  
+    </div> 
   );
 };
 export default Profile;

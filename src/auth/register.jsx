@@ -30,16 +30,14 @@ function Register() {
   const hasUserStartedTyping =
   email ||
   password || 
-  otp  ||                                                                     
+  otp  ||                                                                       
   phone ||
   selectedState ||
   district ||
-  pincode;                             
-  const [token, setToken] = useState("");
-  const [errors, setErrors] = useState({}); 
-
-
-  useEffect(() => {
+  pincode;                                                              
+  const [token, setToken] = useState("");                                 
+  const [errors, setErrors] = useState({});                                
+   useEffect(() => {
     // useEffect() runs whenever one of its dependencies changes like the OTP sent or the timer
     let interval;
 
@@ -79,7 +77,7 @@ if (!/\S+@\S+\.\S+/.test(email)) {
   alert("Please enter a valid email address");
   return;
 } 
-      const response = await fetch(`${BACKEND_BASE_URL}/api/auth/send-otp`, {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/auth/send-otp`, { 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -211,9 +209,9 @@ if (!/\S+@\S+\.\S+/.test(email)) {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Registration Successful!");
-
-        // Optional: remove token after successful registration
+        alert("Registration Successful!");  
+            navigate("/login");                                                             
+      // Optional: remove token after successful registration
         localStorage.removeItem("registerToken");
         navigate("/login");
       } else {
@@ -222,8 +220,8 @@ if (!/\S+@\S+\.\S+/.test(email)) {
       }
     } catch (error) {
       console.error(error);
-      alert("Something went wrong!");
-    }
+      alert("Something went wrong!"); 
+     }
   }
 
   return (     
