@@ -1,10 +1,35 @@
 import states from "./states.json";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";    
 import { useNavigate } from "react-router-dom";
 //export const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 import { BACKEND_BASE_URL } from "../../config";
 const Profile = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();                                                  
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+const dropdownRef = useRef(null);
+
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      setDropdownOpen(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+const handleLogout = async () => {
+  try {
+    await fetch(`${BACKEND_BASE_URL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",   // sends the redlink_session cookie
+    });
+  } catch (err) {
+    console.error("Logout error:", err);
+  } finally {
+    navigate("/login");         // always redirect, even if fetch fails
+  }
+}; 
   //formData is just an object in state that stores all your form values
   //setFormData is the function used to update formData
   const [formData, setFormData] = useState({
@@ -24,7 +49,7 @@ const Profile = () => {
     lastDonationDate: "",
     receiveAlerts: true,
     volunteerParticipation: false,
-  });
+  }); 
   const totalFields = Object.keys(formData).length;
 
   const filledFields = Object.values(formData).filter(
@@ -177,38 +202,59 @@ const Profile = () => {
           <span className="text-black">LINK</span>
           <p className="text-gray-600 text-sm mt-1">Blood Donor Network </p>
         </h1>                                                                     
-          {/* Complete Profile Section */}
-  <div
-    onClick={() => navigate("/profile")}
-    className="flex items-center gap-3 cursor-pointer"
-  >
-    <div className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center shadow-sm">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-7 h-7 text-gray-500"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z"
-        />
-      </svg>
+          {/* Complete Profile Section */}                                                 
+  <div ref={dropdownRef} className="relative flex items-center gap-3">                         
+    <div
+      onClick={() => setDropdownOpen((prev) => !prev)}
+      className="flex items-center gap-3 cursor-pointer"
+    >
+      <div className="text-right">
+        <p className="text-sm text-gray-500">Welcome</p>
+        <p className="font-semibold text-red-600 hover:underline">Complete Your Profile</p>
+      </div>
+      <div className={`w-12 h-12 rounded-full bg-white border-2 flex items-center justify-center shadow-sm transition-colors duration-200 ${
+        dropdownOpen ? "border-red-500" : "border-gray-300"
+      }`}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-gray-500"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round"
+            d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z" />
+        </svg>
+      </div>
     </div>
 
-    <div>                                                                                 
-      <p className="text-sm  text-gray-500">
-        Welcome
-      </p>
-      <p className="font-semibold text-red-600 hover:underline">
-        Complete Your Profile
-      </p>
-    </div>
-  </div>                                                                                 
-   </nav>        
+    {dropdownOpen && (
+      <div className="absolute right-0 top-14 w-44 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50">
+        <button
+          onClick={() => { setDropdownOpen(false); navigate("/settings"); }}
+          className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          {/* settings icon svg */}                               
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-500"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round"
+            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg> 
+          Settings
+        </button>
+        <div className="border-t border-gray-100" />
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
+        >
+          {/* logout icon svg */} 
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+        </svg>                                         
+          Log out
+        </button>
+      </div>
+    )}
+  </div>
+</nav>                                                                                                                      
       {/* Hero section */}
 
       <div className="max-w-5xl mx-auto text-center mb-10">
@@ -329,7 +375,7 @@ const Profile = () => {
                         </label>
 
                         <input
-                          className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+                          className="w-full cursor-pointer p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
                           type="date"
                           name="dateOfBirth"
                           value={formData.dateOfBirth}
@@ -349,7 +395,7 @@ const Profile = () => {
                         </label>
 
                         <select
-                          className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+                          className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer"
                           name="gender"
                           value={formData.gender}
                           onChange={handleChange}
@@ -375,7 +421,7 @@ const Profile = () => {
                         </label>
 
                         <select
-                          className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+                          className="w-full cursor-pointer p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
                           name="bloodGroup"
                           value={formData.bloodGroup}
                           onChange={handleChange}
@@ -757,7 +803,7 @@ const Profile = () => {
                   Submit Profile
                 </button>
               )}
-            </div>
+            </div> 
           </div>
         </div>
 
