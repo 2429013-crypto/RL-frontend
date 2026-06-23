@@ -1,12 +1,12 @@
-import states from "./states.json"; 
-import { useNavigate } from "react-router-dom";                 
-import blood from "../assets/bloodicon.png"; 
+import states from "./states.json";
+import { useNavigate } from "react-router-dom";
+import blood from "../assets/bloodicon.png";
 import care from "../assets/care.png";
 import { useState, useEffect, useRef } from "react";
 import { BACKEND_BASE_URL } from "../../config";
 
-function Register() {                                          
-  const navigate = useNavigate();                                    
+function Register() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   function togglePassword() {
     setShowPassword(!showPassword);
@@ -14,7 +14,7 @@ function Register() {
   const [showOTP, setShowOTP] = useState(false);
   function toggleOTP() {
     setShowOTP(!showOTP);
-  } 
+  }
   const [timer, setTimer] = useState(180); // OTP expires after 3 minutes
   const [resendTimer, setResendTimer] = useState(30); // Resend cooldown
   const [otpSent, setOtpSent] = useState(false);
@@ -26,18 +26,12 @@ function Register() {
   const [password, setPassword] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [district, setDistrict] = useState("");
-  const [pincode, setPincode] = useState(""); 
+  const [pincode, setPincode] = useState("");
   const hasUserStartedTyping =
-  email ||
-  password || 
-  otp  ||                                                                       
-  phone ||
-  selectedState ||
-  district ||
-  pincode;                                                              
-  const [token, setToken] = useState("");                                 
-  const [errors, setErrors] = useState({});                                
-   useEffect(() => {
+    email || password || otp || phone || selectedState || district || pincode;
+  const [token, setToken] = useState("");
+  const [errors, setErrors] = useState({});
+  useEffect(() => {
     // useEffect() runs whenever one of its dependencies changes like the OTP sent or the timer
     let interval;
 
@@ -50,7 +44,7 @@ function Register() {
     }
 
     return () => clearInterval(interval);
-  }, [otpSent, timer]);                                            
+  }, [otpSent, timer]);
   useEffect(() => {
     // Resend button timer
     let interval;
@@ -66,18 +60,17 @@ function Register() {
 
   // API calling for handleSendOTP
   async function handleSendOTP() {
-    try { 
+    try {
       if (!email.trim()) {
-  alert("Email is required");
-  return;
-} 
- const emailRegex =
-  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-if (!/\S+@\S+\.\S+/.test(email)) {
-  alert("Please enter a valid email address");
-  return;
-} 
-      const response = await fetch(`${BACKEND_BASE_URL}/api/auth/send-otp`, { 
+        alert("Email is required");
+        return;
+      }
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!/\S+@\S+\.\S+/.test(email)) {
+        alert("Please enter a valid email address");
+        return;
+      }
+      const response = await fetch(`${BACKEND_BASE_URL}/api/auth/send-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -195,13 +188,13 @@ if (!/\S+@\S+\.\S+/.test(email)) {
           "Content-Type": "application/json",
         },
 
-        body: JSON.stringify({                               
+        body: JSON.stringify({
           email,
-          phoneNumber: phone, 
+          phoneNumber: phone,
           password,
           state: selectedState,
-           districtName: district,
-          pinCode: pincode, 
+          districtName: district,
+          pinCode: pincode,
           verificationToken: token,
         }),
       });
@@ -209,26 +202,32 @@ if (!/\S+@\S+\.\S+/.test(email)) {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Registration Successful!");  
-            navigate("/login");                                                             
-      // Optional: remove token after successful registration
+        alert("Registration Successful!");
+
+        // Optional: remove token after successful registration
         localStorage.removeItem("registerToken");
+
+        await fetch(`${BACKEND_BASE_URL}/api/auth/logout`, {
+          method: "POST",
+          credentials: "include",
+        });
+
         navigate("/login");
       } else {
-        
         alert(data.message);
       }
     } catch (error) {
       console.error(error);
-      alert("Something went wrong!"); 
-     }
+      alert("Something went wrong!");
+    }
   }
 
-  return (     
+  return (
     <div className="min-h-screen  bg-red-50">
       <nav className="bg-white px-4 sm:px-10 py-5 flex justify-between items-center shadow-md">
-        <h1 className=" text-4xl font-bold"> 
-          <span className="text-red-500">RED</span><span className="text-black">LINK</span>  
+        <h1 className=" text-4xl font-bold">
+          <span className="text-red-500">RED</span>
+          <span className="text-black">LINK</span>
           <p className="text-gray-600 text-sm mt-1">Blood Donor Network </p>
         </h1>
       </nav>
@@ -267,7 +266,9 @@ if (!/\S+@\S+\.\S+/.test(email)) {
         {/* Right Section */}
         <div className="w-full lg:w-1/2 flex justify-center px-4">
           <div className="bg-white shadow-xl rounded-3xl p-6 sm:p-8 lg:p-10 w-full max-w-3xl">
-            <h1 className="text-3xl sm:text-5xl font-bold text-red-600">SIGN UP</h1>
+            <h1 className="text-3xl sm:text-5xl font-bold text-red-600">
+              SIGN UP
+            </h1>
             <p className="text-gray-500 mt-3 mb-5">
               Fill in the details below to register
             </p>
@@ -289,7 +290,8 @@ if (!/\S+@\S+\.\S+/.test(email)) {
                   ></i>
                   <input
                     type="email"
-                   required placeholder="Enter Your Email" 
+                    required
+                    placeholder="Enter Your Email"
                     value={email}
                     disabled={otpVerified}
                     onChange={(e) => {
@@ -329,7 +331,7 @@ if (!/\S+@\S+\.\S+/.test(email)) {
                 <div className="mt-3">
                   <div className="flex gap-2">
                     {[0, 1, 2, 3, 4, 5].map((index) => (
-                      <input 
+                      <input
                         key={index}
                         ref={(el) => (otpRefs.current[index] = el)}
                         type="text"
@@ -350,14 +352,18 @@ if (!/\S+@\S+\.\S+/.test(email)) {
 
                           if (value && index < 5) {
                             otpRefs.current[index + 1].focus();
-                          } 
-                        }}                                      
-                          onKeyDown={(e) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpRefs.current[index - 1].focus();
-    }
-  }}
-   className={`w-10 h-10 sm:w-12 sm:h-12 border rounded-lg text-center text-lg sm:text-xl ${
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (
+                            e.key === "Backspace" &&
+                            !otp[index] &&
+                            index > 0
+                          ) {
+                            otpRefs.current[index - 1].focus();
+                          }
+                        }}
+                        className={`w-10 h-10 sm:w-12 sm:h-12 border rounded-lg text-center text-lg sm:text-xl ${
                           otpVerified ? "bg-gray-100 cursor-not-allowed" : ""
                         }`}
                       />
@@ -597,30 +603,29 @@ if (!/\S+@\S+\.\S+/.test(email)) {
                 )}
               </div>
             </div>
-            <div className="flex justify-center mt-10"> 
-  <button
-    onClick={handleRegister}
-    disabled={!hasUserStartedTyping}
-    className={`w-full py-4 sm:py-5 rounded-xl text-xl sm:text-2xl mt-8 text-white transition
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={handleRegister}
+                disabled={!hasUserStartedTyping}
+                className={`w-full py-4 sm:py-5 rounded-xl text-xl sm:text-2xl mt-8 text-white transition
       ${
         hasUserStartedTyping
-          ? "bg-red-600 hover:bg-red-700" 
+          ? "bg-red-600 hover:bg-red-700"
           : "bg-gray-400 cursor-not-allowed"
       }`}
-  >                       
-
+              >
                 <i className="fa-solid fa-user-plus"></i>
                 REGISTER
               </button>
             </div>
             <p className="flex flex-wrap justify-center mt-4 text-center">
               Already have an account?
-              <span 
+              <span
                 onClick={() => navigate("/login")}
-
-              className="text-red-600 font-bold ml-2 cursor-pointer hover:bg-red-300 transition">
+                className="text-red-600 font-bold ml-2 cursor-pointer hover:bg-red-300 transition"
+              >
                 Login
-              </span> 
+              </span>
             </p>
           </div>
         </div>

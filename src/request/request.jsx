@@ -48,13 +48,13 @@ function Request() {
       });
 
       const response = await fetch(`${BACKEND_URL}/api/requests`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  credentials: "include",
-  body: JSON.stringify(formData),
-});
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formData),
+      });
 
       const data = await response.json();
 
@@ -85,7 +85,7 @@ function Request() {
 
   // FETCH ALL REQUESTS
 
- const fetchRequests = async () => {
+  const fetchRequests = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/requests`, {
         credentials: "include",
@@ -112,8 +112,8 @@ function Request() {
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/requests/my-requests`, {
-  credentials: "include",
-})
+        credentials: "include",
+      });
 
       const data = await response.json();
 
@@ -134,13 +134,13 @@ function Request() {
   const updateStatus = async (id, status) => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/requests/${id}/status`, {
-  method: "PATCH",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  credentials: "include",
-  body: JSON.stringify({ status }),
-});
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ status }),
+      });
 
       const data = await response.json();
 

@@ -20,11 +20,14 @@ function Login() {
           credentials: "include",
         });
         if (res.ok) {
-          navigate("/profile"); 
+          const data = await res.json();
+          if (data.data.isOnboarded) {
+            navigate("/request");
+          } else {
+            navigate("/profile");
+          }
         }
-      } catch {
-      
-      }
+      } catch {}
     }
     checkIfAlreadyLoggedIn();
   }, []);
@@ -34,27 +37,27 @@ function Login() {
 
     // email validation
     if (!email.trim()) {
-       setErrors({ email: "Email is required" });
-       return;
-     }
-
-     if (!/\S+@\S+\.\S+/.test(email)) {
-       setErrors({ email: "Please enter a valid email address" });
-       return;
+      setErrors({ email: "Email is required" });
+      return;
     }
 
-     //password validation
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setErrors({ email: "Please enter a valid email address" });
+      return;
+    }
+
+    //password validation
     if (!password.trim()) {
       setErrors({ password: "Password is required" });
-       return;
-     }
+      return;
+    }
 
     if (password.length < 6) {
       setErrors({
         password: "Password must be at least 6 characters long",
       });
       return;
-     }
+    }
 
     console.log("Attempting logins...");
     // If validation passes, proceed with API call
@@ -97,7 +100,11 @@ function Login() {
       if (response.ok) {
         alert(data.message);
 
-        navigate("/profile");
+        if (data.user.isOnboarded) {
+          navigate("/request");
+        } else {
+          navigate("/profile");
+        }
       } else {
         alert(data.message);
       }
