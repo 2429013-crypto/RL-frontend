@@ -18,16 +18,19 @@ function Login() {
       try {
         const res = await fetch(`${BACKEND_BASE_URL}/api/auth/me`, {
           credentials: "include",
-        });
+        }); 
         if (res.ok) {
           const data = await res.json();
-          if (data.data.isOnboarded) {
+          console.log("Navigating to:", data.user?.isOnboarded ? "/request" : "/profile");  
+          if (data.user?.isOnboarded) {
             navigate("/request");
           } else {
-            navigate("/profile");
+            navigate("/profile"); 
           }
         }
-      } catch {}
+      } catch (err) {
+        console.error("checkIfAlreadyLoggedIn error:", err);
+      }
     }
     checkIfAlreadyLoggedIn();
   }, []);
@@ -95,9 +98,9 @@ function Login() {
         data = { message: "Server returned invalid JSON" };
       }
 
-      console.log("Response Data:", data);
-
-      if (response.ok) {
+      console.log("Response Data:", data); 
+      console.log("Login response:", data);                     
+  if (response.ok) {
         alert(data.message);
 
         if (data.user.isOnboarded) {
