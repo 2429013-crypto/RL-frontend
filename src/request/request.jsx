@@ -193,6 +193,18 @@ function Request() {
     }
   }, [activeTab]);
 
+  useEffect(() => {
+    if (showPopup || selectedRequest) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showPopup, selectedRequest]);
+
   // FILTER REQUESTS
 
   const filteredRequests = requests.filter(
@@ -799,18 +811,18 @@ font-medium
           </div>
         )}
         {showPopup && (
-          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-            <div
-              className="bg-white
-rounded-4xl
-w-full
-max-w-3xl
-shadow-[0_20px_60px_rgba(0,0,0,0.12)]
-border
-border-red-100
-overflow-hidden
-"
-            >
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+    <div
+      className="
+      bg-white
+      rounded-3xl
+      w-full
+      max-w-5xl
+      shadow-2xl
+      border
+      border-red-100
+      "
+    >
               <div className="border-b border-gray-100 p-6 flex justify-between items-center">
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">
@@ -841,7 +853,7 @@ overflow-hidden
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-5">
                   <div>
                     <label className="block font-semibold mb-2">
                       Patient Name
