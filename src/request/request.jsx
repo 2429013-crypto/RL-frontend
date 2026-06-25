@@ -6,18 +6,65 @@ function Request() {
 
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); 
   const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
+  const [donors, setDonors] = useState([]);
+ const [showDonors, setShowDonors] = useState(false);
+const fetchDonors = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/requests/${id}/donors`, {
+      credentials: "include",
+    });
+    const data = await response.json();
+    console.log("DONORS:", data);
+    if (data.success) {
+      setDonors(data.data);
+      setShowDonors(true);
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}; 
+ const [activeTab, setActiveTab] = useState("all");
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const navigate = useNavigate();
+  const navigate = useNavigate();   
+  const [currentUser, setCurrentUser] = useState(null);  
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/auth/me`, {
+        credentials: "include",
+      });      
+      const data = await response.json(); 
+      if (data.success) {
+        setCurrentUser(data.user);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const [profileName, setProfileName] = useState("");
+  const fetchProfileName = async () => {
+    try {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/profile/me`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setProfileName(data.fullName || "");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }; 
   const dropdownRef = useRef(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+            
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
+        setDropdownOpen(false); 
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -35,7 +82,7 @@ function Request() {
     } finally {
       navigate("/login");
     }
-  };
+  };      
   const [formData, setFormData] = useState({
     patientName: "",
     bloodGroup: "",
@@ -57,7 +104,7 @@ function Request() {
     console.log("Changing:", e.target.name, e.target.value);
 
     setFormData({
-      ...formData,
+      ...formData, 
       [e.target.name]: e.target.value,
     });
   };
@@ -122,8 +169,12 @@ function Request() {
       console.log("Backend Response:", data);
 
       if (data.success) {
-        setRequests(data.data);
+        setRequests(data.data);  
+              if (selectedRequest) {
+        const updated = data.data.find(r => r.id === selectedRequest.id);
+        if (updated) setSelectedRequest(updated);
       }
+     }
     } catch (error) {
       console.log(error);
     } finally {
@@ -148,8 +199,14 @@ function Request() {
       if (data.success) {
         console.log("My Requests Data:", data.data);
 
-        setRequests(data.data);
+        setRequests(data.data); 
+
+      // ADD THIS
+      if (selectedRequest) {
+        const updated = data.data.find(r => r.id === selectedRequest.id);
+        if (updated) setSelectedRequest(updated);
       }
+   }
     } catch (error) {
       console.log("ERROR:", error);
     }
@@ -181,17 +238,37 @@ function Request() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }; 
+  const acceptRequest = async (id) => {
+  try {
+    const response = await fetch(`${BACKEND_BASE_URL}/api/requests/${id}/accept`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    const data = await response.json();
+    if (data.success) {
+      alert(data.message);
+      fetchRequests();
+      setSelectedRequest(null);
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   // USE EFFECT
-
-  useEffect(() => {
-    if (activeTab === "all") {
-      fetchRequests();
-    } else {
-      fetchMyRequests();
-    }
-  }, [activeTab]);
+useEffect(() => {
+  fetchCurrentUser(); //  added 
+  fetchProfileName();
+  if (activeTab === "all") {
+    fetchRequests();
+  } else {
+    fetchMyRequests();
+  }
+}, [activeTab]);
 
   useEffect(() => {
     if (showPopup || selectedRequest) {
@@ -260,10 +337,13 @@ function Request() {
 
           {/* RIGHT — Avatar dropdown */}
 
-          <div ref={dropdownRef} className="relative">
+          <div ref={dropdownRef} className="relative flex items-center gap-3">
+            <div className="text-right">
+              <p className="text-sm text-gray-500 font-medium">Hello, {profileName || "User"}</p>
+            </div>
             <button
               onClick={() => setDropdownOpen((prev) => !prev)}
-              className={`w-11 h-11 rounded-full bg-white border-2 flex items-center justify-center shadow-sm transition-colors duration-200 ${
+              className={`w-11 cursor-pointer h-11 rounded-full bg-white border-2 flex items-center justify-center shadow-sm transition-colors duration-200 ${
                 dropdownOpen ? "border-red-500" : "border-gray-300"
               }`}
             >
@@ -290,7 +370,7 @@ function Request() {
                     setDropdownOpen(false);
                     navigate("/profile");
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -520,7 +600,7 @@ function Request() {
             <button
               onClick={() => setActiveTab("my")}
               className={`
-        px-6
+     px-6
         py-3
         rounded-xl
         font-semibold
@@ -784,31 +864,124 @@ font-medium
               </div>
 
               {/* Footer */}
+   <div className="border-t border-gray-100 p-6 flex justify-end gap-3"> 
+      {console.log("owner check:", currentUser?.id, selectedRequest?.userId)}
+  <button
+    onClick={() => setSelectedRequest(null)}
+    className="px-5 py-3 rounded-2xl border border-gray-200 text-gray-700 font-medium"
+  >
+    Close
+  </button>      
+  {/* View Donors button — owner or admin only */}
+{currentUser &&
+  (currentUser.role === "admin" ||
+    Number(currentUser.id) === Number(selectedRequest.userId)) &&
+  selectedRequest.acceptanceCount > 0 && (
+    <button
+      onClick={() => fetchDonors(selectedRequest.id)}
+      className="px-5 py-3 rounded-2xl bg-purple-600 text-white font-medium hover:bg-purple-700"
+    >
+      View Donors ({selectedRequest.acceptanceCount})
+    </button>
+  )}             
+ {/* Cancel + Fulfill — owner or admin only */}
+  {currentUser &&
+    (currentUser.role === "admin" ||
+      Number(currentUser.id) === Number(selectedRequest.userId)) && (
+      <>
+     {(selectedRequest.status === "Active" || selectedRequest.status === "Accepted") && (
+  <button
+    onClick={() => updateStatus(selectedRequest.id, "Cancelled")}
+    className="px-5 py-3 rounded-2xl bg-red-600 text-white font-medium hover:bg-red-700"
+  >
+    Cancel Request
+  </button>
+)}
 
-              <div className="border-t border-gray-100 p-6 flex justify-end gap-3">
-                <button
-                  onClick={() => setSelectedRequest(null)}
-                  className="px-5 py-3 rounded-2xl border border-gray-200 text-gray-700 font-medium"
-                >
-                  Close
-                </button>
+{(selectedRequest.status === "Active" || selectedRequest.status === "Accepted") && (
+  <button
+    onClick={() => updateStatus(selectedRequest.id, "Fulfilled")}
+    className="px-5 py-3 rounded-2xl bg-green-600 text-white font-medium hover:bg-green-700"
+  >
+    Mark Fulfilled
+  </button>
+)} 
+      </>
+    )}
 
-                <button
-                  onClick={() => updateStatus(selectedRequest.id, "Cancelled")}
-                  className="px-5 py-3 rounded-2xl bg-red-600 text-white font-medium hover:bg-red-700"
-                >
-                  Cancel Request
-                </button>
+  {/* Accept — other users only, request must be Active */}
+  {currentUser &&
+    Number(currentUser.id) !== Number(selectedRequest.userId) &&
+    currentUser.role !== "admin" &&
+    selectedRequest.status === "Active" && (
+      <button
+        onClick={() => acceptRequest(selectedRequest.id)}
+        className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-medium hover:bg-blue-700"
+      >
+        Accept &amp; Donate
+      </button>
+    )}
+</div>  {showDonors && (
+  <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-4">
+    <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+      <div className="border-b border-gray-100 p-6 flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">Accepted Donors</h2>
+          <p className="text-gray-500 text-sm mt-1">
+            {donors.length} donor(s) · {selectedRequest.acceptanceCount >= 10 ? "0" : 10 - selectedRequest.acceptanceCount} slots remaining
+          </p>
+        </div>
+        <button
+          onClick={() => setShowDonors(false)}
+          className="w-10 h-10 rounded-xl hover:bg-gray-100 text-xl"
+        >
+          ×
+        </button>
+      </div>
 
-                <button
-                  onClick={() => updateStatus(selectedRequest.id, "Fulfilled")}
-                  className="px-5 py-3 rounded-2xl bg-green-600 text-white font-medium hover:bg-green-700"
-                >
-                  Mark Fulfilled
-                </button>
+      <div className="p-6 space-y-3">
+        {donors.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">No donors yet</p>
+        ) : (
+          donors.map((acceptance, index) => (
+            <div
+              key={acceptance.id}
+              className="flex items-center gap-4 bg-slate-50 rounded-2xl p-4"
+            >
+              <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-bold flex items-center justify-center text-sm">
+                {acceptance.serialNumber}
               </div>
+          <div>
+     <p className="font-semibold text-slate-900">
+    Donor #{acceptance.serialNumber}
+    </p>
+   <p className="text-sm text-gray-500">
+    📧 {acceptance.donor?.email}
+    </p>
+    {acceptance.donor?.phoneNumber && (
+    <p className="text-sm text-gray-500">
+      📞 {acceptance.donor?.phoneNumber}
+    </p>
+    )}
+     </div>
             </div>
-          </div>
+          ))
+        )}
+      </div>
+
+      <div className="border-t border-gray-100 p-4 flex justify-end">
+        <button
+          onClick={() => setShowDonors(false)}
+          className="px-5 py-3 rounded-2xl border border-gray-200 text-gray-700 font-medium"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+  )}
+ </div>
+          </div> 
         )}
         {showPopup && (
   <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
@@ -840,7 +1013,7 @@ font-medium
                 >
                   ×
                 </button>
-              </div>
+              </div> 
 
               <div className="p-6">
                 <div className="mb-6">
@@ -983,7 +1156,7 @@ font-medium
                 </div>
                 <div className="mt-6">
                   <button
-                    onClick={handleSubmit}
+                    onClick={handleSubmit}         
                     className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700"
                   >
                     Submit Request
