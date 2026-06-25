@@ -18,7 +18,7 @@ function Register() {
   const [token, setToken] = useState("");
   const [errors, setErrors] = useState({});
 
- const hasUserStartedTyping = email || password || otp;
+  const hasUserStartedTyping = email || password || otp;
 
   useEffect(() => {
     let interval;
@@ -89,7 +89,7 @@ function Register() {
     if (!password.trim()) newErrors.password = "Password is required";
     else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
     else if (!/^[a-zA-Z0-9]+$/.test(password)) newErrors.password = "Only letters and numbers allowed";
-    setErrors(newErrors); 
+    setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
     if (!token) { alert("Please verify OTP first."); return; }
 
@@ -97,11 +97,7 @@ function Register() {
       const response = await fetch(`${BACKEND_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          verificationToken: token,
-        }),
+        body: JSON.stringify({ email, password, verificationToken: token }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -123,12 +119,12 @@ function Register() {
           <span className="text-red-500">RED</span>
           <span className="text-black">LINK</span>
           <p className="text-gray-600 text-sm mt-1">Blood Donor Network</p>
-        </h1>                                                                                     
-    </nav>
-    <div className="flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">    
-   {/* LEFT */}
- <div className="hidden lg:flex lg:w-[45%] flex-col justify-center px-12 py-10 bg-red-50">         
-      <div>
+        </h1>
+      </nav>
+      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">
+        {/* LEFT */}
+        <div className="hidden lg:flex lg:w-[45%] flex-col justify-center px-12 py-10 bg-red-50">
+          <div>
             <h1 className="text-5xl font-bold">
               Be a <span className="text-red-500">Life Saver</span>
             </h1>
@@ -141,8 +137,8 @@ function Register() {
 
           {/* Illustration in light red box */}
           {/* <div className="bg-red-100 rounded-3xl shadow-md p-6 flex justify-center"> */}
-            <img src={care} alt="Donate Blood" className="w-56" />
-         {/* // </div> */}
+          <img src={care} alt="Donate Blood" className="w-56" />
+          {/* // </div> */}
 
           {/* 3 Steps */}
           <div className="bg-white border border-red-100 rounded-2xl p-5 shadow-sm">
@@ -168,7 +164,7 @@ function Register() {
           </div>
 
           {/* Why Join */}
-          <div className="grid grid-cols-2 mt-3 gap-3">     
+          <div className="grid grid-cols-2 mt-3 gap-3">
             {[
               ["📍", "Find nearby blood requests"],
               ["🔔", "Get emergency notifications"],
@@ -181,25 +177,25 @@ function Register() {
               </div>
             ))}
           </div>
-        </div>        
+        </div>
 
         {/* RIGHT */}
-        <div className="lg:w-[55%] flex items-center justify-center px-12 py-10">  
+        <div className="lg:w-[55%] flex items-center justify-center px-12 py-10">
           <div className="bg-white shadow-xl rounded-3xl p-12 w-full max-w-2xl border border-gray-100">
             <h1 className="text-4xl font-bold text-red-600">SIGN UP</h1>
-            <p className="text-gray-500 mt-2 mb-6 text-sm">Fill in the details below to register</p> 
+            <p className="text-gray-500 mt-2 mb-6 text-sm">Fill in the details below to register</p>
             <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-5">
-  <h3 className="font-bold text-gray-800 flex items-center gap-2">
-    <i className="fa-solid fa-droplet text-red-500"></i>
-    Join the RedLink Community
-  </h3>
-     <p className="text-sm text-gray-500 mt-1">        
-    Register today and help connect blood donors with patients in need.
-  </p>
-   </div>
+              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                <i className="fa-solid fa-droplet text-red-500"></i>
+                Join the RedLink Community
+              </h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Register today and help connect blood donors with patients in need.
+              </p>
+            </div>
 
             {/* Email */}
-            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center mb-5">  
+            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center mb-5">
               <div className="flex flex-col w-full">
                 <label className="font-bold mb-2">Email</label>
                 <div className="relative">
@@ -226,12 +222,12 @@ function Register() {
             {errors.email && <p className="text-red-500 text-xs mb-3">{errors.email}</p>}
 
             {/* OTP — only shows after Send OTP clicked */}
-            {(otpSent || otpVerified) && ( 
+            {(otpSent || otpVerified) && (
               <div className="mb-5">
                 <label className="font-bold block mb-2">OTP Verification</label>
                 <div className="flex gap-2 items-center">
                   <div className="flex gap-2">
-                    {[0,1,2,3,4,5].map((index) => (
+                    {[0, 1, 2, 3, 4, 5].map((index) => (
                       <input
                         key={index}
                         ref={(el) => (otpRefs.current[index] = el)}
@@ -313,8 +309,8 @@ function Register() {
               </div>
               <p className="text-gray-400 text-xs mt-1">⚠️ Min 6 characters — letters or numbers only</p>
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
-            </div> 
-       {/* Security note */}
+            </div>
+            {/* Security note */}
             <div className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-xl p-3 mb-5">
               <span className="text-red-400 mt-0.5">🛡️</span>
               <p className="text-xs text-gray-500">Your information is securely stored and used only for blood donation purposes.</p>
@@ -324,11 +320,10 @@ function Register() {
             <button
               onClick={handleRegister}
               disabled={!hasUserStartedTyping}
-              className={`w-full py-4 rounded-xl text-lg font-bold transition ${
-                hasUserStartedTyping
+              className={`w-full py-4 rounded-xl text-lg font-bold transition ${hasUserStartedTyping
                   ? "bg-red-600 hover:bg-red-700 text-white"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
+                }`}
             >
               <i className="fa-solid fa-user-plus mr-2"></i>
               REGISTER
