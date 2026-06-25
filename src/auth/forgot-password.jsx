@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_BASE_URL } from "../../config";
 
 function ForgotPassword() {
   const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: New Password
+  const otpRefs = useRef([]);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
@@ -165,19 +166,42 @@ function ForgotPassword() {
                 We've sent a 6-digit OTP code to <strong className="text-slate-800">{email}</strong>.
               </p>
 
-              <label className="block mt-8 font-bold">Enter 6-Digit OTP</label>
-              <div className="relative mt-3">
-                <input
-                  type="text"
-                  maxLength={6}
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="Enter 6-digit OTP"
-                  className="w-full border border-black rounded-xl p-4 text-black tracking-widest text-center font-bold text-xl focus:outline-none focus:border-red-500"
-                />
+              <label className="block mt-8 font-bold text-center">Enter 6-Digit OTP</label>
+              <div className="flex gap-2 justify-center mt-4">
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                  <input
+                    key={index}
+                    ref={(el) => (otpRefs.current[index] = el)}
+                    type="text"
+                    maxLength={1}
+                    value={otp[index] || ""}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/[^0-9]/g, "");
+                      let newOtp = otp.split("");
+                      newOtp[index] = value;
+                      setOtp(newOtp.join(""));
+                      setErrors((p) => ({ ...p, otp: "" }));
+                      if (value && index < 5) otpRefs.current[index + 1].focus();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Backspace" && !otp[index] && index > 0) {
+                        otpRefs.current[index - 1].focus();
+                      }
+                    }}
+                    onPaste={(e) => {
+                      e.preventDefault();
+                      const pasted = e.clipboardData.getData("text").replace(/[^0-9]/g, "").slice(0, 6);
+                      setOtp(pasted);
+                      if (otpRefs.current[pasted.length - 1]) {
+                        otpRefs.current[pasted.length - 1].focus();
+                      }
+                    }}
+                    className="w-12 h-12 border border-black rounded-lg text-center text-xl font-bold focus:outline-none focus:border-red-500 transition"
+                  />
+                ))}
               </div>
               {errors.otp && (
-                <p className="text-red-500 text-sm mt-1">{errors.otp}</p>
+                <p className="text-red-500 text-sm mt-2 text-center">{errors.otp}</p>
               )}
 
               <button
