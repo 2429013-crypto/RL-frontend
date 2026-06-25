@@ -258,6 +258,24 @@ const fetchDonors = async (id) => {
     console.log(error);
   }
 };
+  const cancelDonation = async (id) => {
+    try {
+      const response = await fetch(`${BACKEND_BASE_URL}/api/requests/${id}/accept`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert(data.message);
+        fetchRequests();
+        setSelectedRequest(null);
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // USE EFFECT
 useEffect(() => {
@@ -269,6 +287,17 @@ useEffect(() => {
     fetchMyRequests();
   }
 }, [activeTab]);
+
+useEffect(() => {
+  if (selectedRequest || showDonors || showPopup) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [selectedRequest, showDonors, showPopup]);
 
   // FILTER REQUESTS
 
@@ -554,7 +583,7 @@ useEffect(() => {
         </div>
 
         {/* Tabs */}
-        <div className="flex justify-between items-center mt-10 mb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-10 mb-4">
           {/* Left Side */}
           <div>
             <h3 className="text-xl font-bold text-gray-900">Requests</h3>
@@ -737,7 +766,7 @@ font-medium
         )}
         {selectedRequest && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-            <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden">
+            <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
               {/* Header */}
 
               <div className="border-b border-gray-100 p-6 flex justify-between items-center">
@@ -761,8 +790,8 @@ font-medium
 
               {/* Body */}
 
-              <div className="p-6">
-                <div className="grid grid-cols-2 gap-5">
+              <div className="p-6 overflow-y-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="bg-slate-50 rounded-2xl p-4">
                     <p className="text-xs uppercase text-gray-400 mb-1">
                       Patient Name
@@ -897,21 +926,32 @@ font-medium
       </>
     )}
 
-  {/* Accept — other users only, request must be Active */}
+  {/* Accept / Cancel Donation — other users only, request must be Active or Accepted */}
   {currentUser &&
     Number(currentUser.id) !== Number(selectedRequest.userId) &&
     currentUser.role !== "admin" &&
-    selectedRequest.status === "Active" && (
-      <button
-        onClick={() => acceptRequest(selectedRequest.id)}
-        className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-medium hover:bg-blue-700"
-      >
-        Accept &amp; Donate
-      </button>
+    (selectedRequest.status === "Active" || selectedRequest.status === "Accepted") && (
+      selectedRequest.acceptances?.some(acc => Number(acc.donorId) === Number(currentUser.id)) ? (
+        <button
+          onClick={() => cancelDonation(selectedRequest.id)}
+          className="px-5 py-3 rounded-2xl bg-orange-600 text-white font-medium hover:bg-orange-700"
+        >
+          Cancel Donation
+        </button>
+      ) : (
+        (selectedRequest.acceptanceCount || 0) < 10 && (
+          <button
+            onClick={() => acceptRequest(selectedRequest.id)}
+            className="px-5 py-3 rounded-2xl bg-blue-600 text-white font-medium hover:bg-blue-700"
+          >
+            Accept &amp; Donate
+          </button>
+        )
+      )
     )}
 </div>  {showDonors && (
   <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-4">
-    <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+    <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
       <div className="border-b border-gray-100 p-6 flex justify-between items-center">
         <div>
           <h2 className="text-xl font-bold text-slate-900">Accepted Donors</h2>
@@ -927,7 +967,7 @@ font-medium
         </button>
       </div>
 
-      <div className="p-6 space-y-3">
+      <div className="p-6 space-y-3 overflow-y-auto">
         {donors.length === 0 ? (
           <p className="text-gray-500 text-center py-4">No donors yet</p>
         ) : (
@@ -972,17 +1012,20 @@ font-medium
           </div> 
         )}
        {showPopup && (
-          <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+              <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
             <div
               className="bg-white
-rounded-4xl
-w-full
-max-w-3xl
-shadow-[0_20px_60px_rgba(0,0,0,0.12)]
-border
-border-red-100
-overflow-hidden
-"
+ rounded-4xl
+ w-full
+ max-w-3xl
+ shadow-[0_20px_60px_rgba(0,0,0,0.12)]
+ border
+ border-red-100
+ overflow-hidden
+ max-h-[90vh]
+ flex
+ flex-col
+ "
             >
               <div className="border-b border-gray-100 p-6 flex justify-between items-center">
                 <div>
@@ -1003,7 +1046,7 @@ overflow-hidden
                 </button>
               </div> 
 
-              <div className="p-6">
+              <div className="p-6 overflow-y-auto">
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-slate-900">
                     Request Information
