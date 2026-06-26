@@ -4,6 +4,7 @@ import Login from "./auth/login";
 import Register from "./auth/register";
 import Profile from "./auth/profile";
 import Request from "./request/Request";
+import ForgotPassword from "./auth/forgot-password";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
 
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Protected Routes */}
         

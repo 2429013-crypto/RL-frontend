@@ -67,6 +67,8 @@ const Profile = () => {
     address: "",
     city: "",
     state: "",
+    districtName: "",
+    phoneNumber: "",
     pinCode: "",
     weight: "",
     medicalConditions: "",
@@ -112,6 +114,8 @@ const Profile = () => {
           address: profile.address || "",
           city: profile.city || "",
           state: profile.state || "",
+          districtName: profile.User?.districtName || "",
+          phoneNumber: profile.User?.phoneNumber || "",
           pinCode: profile.pinCode || "",
           weight: profile.weight || "",
           medicalConditions: profile.medicalConditions || "",
@@ -168,11 +172,6 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
 
-    if (!photoPreview) {
-      alert("Please upload a profile photo.");
-      return;
-    }
-
     const payload = new FormData();
     payload.append("fullName", formData.fullName);
     payload.append("dateOfBirth", formData.dateOfBirth);
@@ -185,6 +184,8 @@ const Profile = () => {
     payload.append("address", formData.address);
     payload.append("city", formData.city);
     payload.append("state", formData.state);
+    payload.append("districtName", formData.districtName);
+    payload.append("phoneNumber", formData.phoneNumber);
     payload.append("pinCode", formData.pinCode);
     payload.append("weight", formData.weight);
     payload.append("medicalConditions", formData.medicalConditions);
@@ -241,15 +242,19 @@ const Profile = () => {
         newErrors.bloodGroup = "Blood Group is required";
       if (!formData.occupation.trim())
         newErrors.occupation = "Occupation is required";
-      if (!photoPreview)
-        newErrors.profilePhoto = "Profile Photo is required";
     }
 
     if (currentStep === 2) {
       if (!formData.address.trim()) newErrors.address = "Address is required";
       if (!formData.city.trim()) newErrors.city = "City is required";
       if (!formData.state) newErrors.state = "State is required";
+      if (!formData.districtName.trim()) newErrors.districtName = "District is required";
       if (!formData.pinCode.trim()) newErrors.pinCode = "Pin Code is required";
+      if (!formData.phoneNumber.trim()) {
+        newErrors.phoneNumber = "Contact Number is required";
+      } else if (!/^[6-9]\d{9}$/.test(formData.phoneNumber)) {
+        newErrors.phoneNumber = "Invalid Contact Number";
+      }
     }
 
     if (currentStep === 3) {
@@ -497,6 +502,8 @@ const Profile = () => {
                         name="dateOfBirth"
                         value={formData.dateOfBirth}
                         onChange={handleChange}
+                        onClick={(e) => e.target.showPicker()}
+                        onFocus={(e) => e.target.showPicker()}
                       />
                       {errors.dateOfBirth && (
                         <p className="text-red-500 text-sm">
@@ -722,6 +729,42 @@ const Profile = () => {
                       )}
                     </div>
                   </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-gray-700 font-medium mb-2">
+                        District
+                      </label>
+                      <input
+                        className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+                        type="text"
+                        name="districtName"
+                        placeholder="Enter Your District"
+                        value={formData.districtName}
+                        onChange={handleChange}
+                      />
+                      {errors.districtName && (
+                        <p className="text-red-500 text-sm">{errors.districtName}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium mb-2">
+                        Contact Number
+                      </label>
+                      <input
+                        className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+                        type="text"
+                        name="phoneNumber"
+                        placeholder="Enter Your Contact Number"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                      />
+                      {errors.phoneNumber && (
+                        <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -785,11 +828,13 @@ const Profile = () => {
                         Last Donation Date
                       </label>
                       <input
-                        className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
+                        className="w-full cursor-pointer p-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400"
                         type="date"
                         name="lastDonationDate"
                         value={formData.lastDonationDate}
                         onChange={handleChange}
+                        onClick={(e) => e.target.showPicker()}
+                        onFocus={(e) => e.target.showPicker()}
                       />
                     </div>
                   </div>
