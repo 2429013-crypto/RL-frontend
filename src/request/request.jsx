@@ -883,6 +883,12 @@ font-medium
               {/* Footer */}
    <div className="border-t border-gray-100 p-6 flex justify-end gap-3"> 
       {console.log("owner check:", currentUser?.id, selectedRequest?.userId)}
+      {console.log("DEBUG:", {
+    acceptanceCount: selectedRequest?.acceptanceCount,
+    acceptances: selectedRequest?.acceptances,
+    userId: currentUser?.id,
+    requestUserId: selectedRequest?.userId,
+  })}
   <button
     onClick={() => setSelectedRequest(null)}
     className="px-5 py-3 rounded-2xl border border-gray-200 text-gray-700 font-medium"
@@ -1011,22 +1017,19 @@ font-medium
  </div>
           </div> 
         )}
-       {showPopup && (
-              <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
-            <div
-              className="bg-white
- rounded-4xl
- w-full
- max-w-3xl
- shadow-[0_20px_60px_rgba(0,0,0,0.12)]
- border
- border-red-100
- overflow-hidden
- max-h-[90vh]
- flex
- flex-col
- "
-            >
+        "{showPopup && (
+  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+    <div
+      className="
+      bg-white
+      rounded-3xl
+      w-full
+      max-w-5xl
+      shadow-2xl
+      border
+      border-red-100
+      "
+    >
               <div className="border-b border-gray-100 p-6 flex justify-between items-center">
                 <div>
                   <h2 className="text-3xl font-bold text-slate-900">
