@@ -109,7 +109,7 @@ function Register() {
     } catch {
       alert("Something went wrong!");
     }
-  }
+  } 
 
   return (
     <div className="min-h-screen bg-red-50">
@@ -150,7 +150,7 @@ function Register() {
             ].map(({ num, title, desc }, i, arr) => (
               <div key={num}>
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center font-black text-sm">
+                  <div className="shrink-0 w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center font-black text-sm">
                     {num}
                   </div>
                   <div>
