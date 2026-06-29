@@ -5,15 +5,15 @@ import Register from "./auth/register";
 import Profile from "./auth/profile";
 import Request from "./request/Request";
 import ForgotPassword from "./auth/forgot-password";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute"; 
 
-function App() {
+
+function App() {    
   return (
     <BrowserRouter>
       <Routes>
         {/* Open Register First */}
-
-        <Route path="/" element={<Navigate to="/register" />} />
+         <Route path="/" element={<Navigate to="/register" />} />
 
         {/* Public Routes */}
 
@@ -43,6 +43,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-}
+} 
 
 export default App;

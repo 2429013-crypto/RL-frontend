@@ -109,7 +109,7 @@ function Register() {
     } catch {
       alert("Something went wrong!");
     }
-  }
+  } 
 
   return (
     <div className="min-h-screen bg-red-50">
