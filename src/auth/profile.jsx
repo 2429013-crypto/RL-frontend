@@ -82,60 +82,60 @@ const Profile = () => {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-  const checkAuth = async () => {
-    try {
-      const response = await fetch(`${BACKEND_BASE_URL}/api/auth/me`, {
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        navigate("/login");
-        return;
-      }
-
-      const user = await response.json();
-
-      // 👇 FETCH PROFILE AFTER AUTH
-      const profileRes = await fetch(`${BACKEND_BASE_URL}/api/profile/me`, {
-        credentials: "include",
-      });
-
-      if (profileRes.ok) {
-        const profile = await profileRes.json();
-        setIsEdit(true);
-
-        setFormData({
-          fullName: profile.fullName || "",
-          dateOfBirth: profile.dateOfBirth || "",
-          gender: profile.gender || "",
-          bloodGroup: profile.bloodGroup || "",
-          occupation: profile.occupation || "",
-          profilePhoto: null, // file cannot be prefilled
-          address: profile.address || "",
-          city: profile.city || "",
-          state: profile.state || "",
-          districtName: profile.User?.districtName || "",
-          phoneNumber: profile.User?.phoneNumber || "",
-          pinCode: profile.pinCode || "",
-          weight: profile.weight || "",
-          medicalConditions: profile.medicalConditions || "",
-          currentMedications: profile.currentMedications || "",
-          lastDonationDate: profile.lastDonationDate || "",
-          receiveAlerts: profile.receiveAlerts ?? true,
-          volunteerParticipation: profile.volunteerParticipation ?? false,
+    const checkAuth = async () => {
+      try {
+        const response = await fetch(`${BACKEND_BASE_URL}/api/auth/me`, {
+          credentials: "include",
         });
 
-        if (profile.profilePhoto) {
-          setPhotoPreview(profile.profilePhoto);
+        if (!response.ok) {
+          navigate("/login");
+          return;
         }
-      }
-    } catch (error) {
-      navigate("/login");
-    }
-  };
 
-  checkAuth();
-}, []);
+        const user = await response.json();
+
+        // 👇 FETCH PROFILE AFTER AUTH
+        const profileRes = await fetch(`${BACKEND_BASE_URL}/api/profile/me`, {
+          credentials: "include",
+        });
+
+        if (profileRes.ok) {
+          const profile = await profileRes.json();
+          setIsEdit(true);
+
+          setFormData({
+            fullName: profile.fullName || "",
+            dateOfBirth: profile.dateOfBirth || "",
+            gender: profile.gender || "",
+            bloodGroup: profile.bloodGroup || "",
+            occupation: profile.occupation || "",
+            profilePhoto: null, // file cannot be prefilled
+            address: profile.address || "",
+            city: profile.city || "",
+            state: profile.state || "",
+            districtName: profile.User?.districtName || "",
+            phoneNumber: profile.User?.phoneNumber || "",
+            pinCode: profile.pinCode || "",
+            weight: profile.weight || "",
+            medicalConditions: profile.medicalConditions || "",
+            currentMedications: profile.currentMedications || "",
+            lastDonationDate: profile.lastDonationDate || "",
+            receiveAlerts: profile.receiveAlerts ?? true,
+            volunteerParticipation: profile.volunteerParticipation ?? false,
+          });
+
+          if (profile.profilePhoto) {
+            setPhotoPreview(profile.profilePhoto);
+          }
+        }
+      } catch (error) {
+        navigate("/login");
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const totalFields = Object.keys(formData).length;
   const filledFields = Object.keys(formData).filter((key) => {
@@ -248,7 +248,8 @@ const Profile = () => {
       if (!formData.address.trim()) newErrors.address = "Address is required";
       if (!formData.city.trim()) newErrors.city = "City is required";
       if (!formData.state) newErrors.state = "State is required";
-      if (!formData.districtName.trim()) newErrors.districtName = "District is required";
+      if (!formData.districtName.trim())
+        newErrors.districtName = "District is required";
       if (!formData.pinCode.trim()) newErrors.pinCode = "Pin Code is required";
       if (!formData.phoneNumber.trim()) {
         newErrors.phoneNumber = "Contact Number is required";
@@ -295,7 +296,9 @@ const Profile = () => {
             className="flex items-center gap-3 cursor-pointer"
           >
             <div className="text-right">
-              <p className="text-sm text-gray-500">Welcome, {formData.fullName || "User"}</p>
+              <p className="text-sm text-gray-500">
+                Welcome, {formData.fullName || "User"}
+              </p>
               {progressPercentage < 100 && (
                 <p className="font-semibold text-red-600 hover:underline">
                   Complete Your Profile
@@ -430,7 +433,9 @@ const Profile = () => {
                       if (isEdit || step < currentStep) setCurrentStep(step);
                     }}
                     className={`flex items-center gap-4 ${
-                      isEdit || step < currentStep ? "cursor-pointer" : "cursor-not-allowed"
+                      isEdit || step < currentStep
+                        ? "cursor-pointer"
+                        : "cursor-not-allowed"
                     }`}
                   >
                     <div
@@ -744,7 +749,9 @@ const Profile = () => {
                         onChange={handleChange}
                       />
                       {errors.districtName && (
-                        <p className="text-red-500 text-sm">{errors.districtName}</p>
+                        <p className="text-red-500 text-sm">
+                          {errors.districtName}
+                        </p>
                       )}
                     </div>
 
@@ -761,7 +768,9 @@ const Profile = () => {
                         onChange={handleChange}
                       />
                       {errors.phoneNumber && (
-                        <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
+                        <p className="text-red-500 text-sm">
+                          {errors.phoneNumber}
+                        </p>
                       )}
                     </div>
                   </div>
