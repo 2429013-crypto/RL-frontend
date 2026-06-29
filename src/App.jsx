@@ -5,15 +5,18 @@ import Register from "./auth/register";
 import Profile from "./auth/profile";
 import Request from "./request/Request";
 import ForgotPassword from "./auth/forgot-password";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";  
+import Landing from "./auth/landingpage";  //added 
 
-function App() {
+
+function App() {    
   return (
-    <BrowserRouter>
+    <BrowserRouter> 
       <Routes>
-        {/* Open Register First */}
+        {/* Open Register First */} 
+        <Route path="/" element={<Landing />} />
 
-        <Route path="/" element={<Navigate to="/register" />} />
+         {/* <Route path="/" element={<Navigate to="/register" />} /> */}
 
         {/* Public Routes */}
 
@@ -28,7 +31,7 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
-            </ProtectedRoute>
+            </ProtectedRoute> 
           }
         />
 
@@ -43,6 +46,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-}
+} 
 
 export default App;

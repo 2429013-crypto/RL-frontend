@@ -164,9 +164,8 @@ function ForgotPassword() {
               <h1 className="text-4xl font-bold text-red-500">Verify OTP</h1>
               <p className="text-gray-500 mt-3">
                 We've sent a 6-digit OTP code to <strong className="text-slate-800">{email}</strong>.
-              </p>
-
-              <label className="block mt-8 font-bold text-center">Enter 6-Digit OTP</label>
+             </p> 
+    <label className="block mt-8 font-bold text-center">Enter 6-Digit OTP</label> 
               <div className="flex gap-2 justify-center mt-4">
                 {[0, 1, 2, 3, 4, 5].map((index) => (
                   <input
