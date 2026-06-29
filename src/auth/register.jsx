@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 import care from "../assets/care.png";
 import { useState, useEffect, useRef } from "react";
 import { BACKEND_BASE_URL } from "../../config";
@@ -21,7 +21,7 @@ function Register() {
   const hasUserStartedTyping = email || password || otp;
 
   useEffect(() => {
-    let interval;
+    let interval;                                
     if (otpSent && timer > 0) {
       interval = setInterval(() => setTimer((p) => p - 1), 1000);
     }
@@ -106,29 +106,116 @@ function Register() {
       } else {
         alert(data.message);
       }
-    } catch {
-      alert("Something went wrong!");
+    } catch {                              
+      alert("Something went wrong!");       
     }
   } 
 
-  return (
-    <div className="min-h-screen bg-red-50">
-      {/* NAV */}
-      <nav className="bg-white px-6 py-4 flex justify-between items-center shadow-sm border-b border-gray-100">
-        <h1 className="text-4xl font-bold">
-          <span className="text-red-500">RED</span>
-          <span className="text-black">LINK</span>
-          <p className="text-gray-600 text-sm mt-1">Blood Donor Network</p>
-        </h1>
-      </nav>
+  return (                                                    
+             <>
+    {/* TOP GOVERNMENT NOTICE BAR */}
+    <div
+      style={{
+        background: "#0A2540",
+        color: "#E2E8F0",
+        padding: "8px 24px",
+        fontSize: "12px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        borderBottom: "2px solid #0077B6",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <span>🏛️</span>
+        <span>
+          Integrated Blood Network Services • National Health Portal
+        </span>
+      </div>
+
+      <div style={{ display: "flex", gap: "16px" }}>
+        <span>Emergency Toll-free: 108</span>
+        <span>Ministry of Health Initiative</span>
+      </div>                                                            
+    </div>
+  <div className="min-h-screen bg-red-50">             
+        {/* NAV */} 
+    <nav
+  className="bg-white px-4 sm:px-3 flex justify-between items-center shadow-sm relative"
+  style={{ height: "78px" }}
+> 
+         {/* Logo */}
+       <div style={{ display:"flex", alignItems:"center", gap:14,padding:3, cursor:"pointer" }} onClick={() => navigate("/")}>
+  <div style={{ width:48, height:48, background:"#C8102E", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+    <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+      <path d="M12 3C12 3 6 10 6 14.5a6 6 0 0012 0C18 10 12 3 12 3z" fill="#fff" opacity="0.95"/>
+      <path d="M9.5 14.5a2.5 2.5 0 005 0" stroke="#C8102E" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+    </svg>
+  </div>
+  <div>
+    <div style={{ display:"flex", alignItems:"center", lineHeight:1 }}>      
+      <span style={{ fontFamily:"'Barlow',sans-serif", fontWeight:900, fontSize:28, color:"#C8102E", letterSpacing:3, textTransform:"uppercase" }}>RED</span>
+      <div style={{ width:2, height:26, background:"#C8102E", margin:"0 5px", borderRadius:1, opacity:0.5 }}></div>
+      <span style={{ fontFamily:"'Barlow',sans-serif", fontWeight:900, fontSize:28, color:"#111", letterSpacing:3, textTransform:"uppercase" }}>LINK</span>
+    </div>
+    <div style={{ fontFamily:"'Rajdhani',sans-serif", fontSize:10, fontWeight:600, color:"#999", letterSpacing:"0.3em", textTransform:"uppercase", marginTop:3 }}>Blood Donor Network</div>
+  </div>
+</div>                                                                                            
+  {/* Back to Home */}
+  <span
+    onClick={() => navigate("/")}
+    className="cursor-pointer text-red-700 font-medium border-b-2 border-red-500 pb-1 hover:text-red-600 transition-colors duration-300"
+  > 
+    Back to Home
+  </span>                
+ </nav>                        
       <div className="flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">
         {/* LEFT */}
         <div className="hidden lg:flex lg:w-[45%] flex-col justify-center px-12 py-10 bg-red-50">
           <div>
-            <h1 className="text-5xl font-bold">
-              Be a <span className="text-red-500">Life Saver</span>
-            </h1>
-            <h2 className="text-xl font-bold mt-2 text-gray-700">Save Lives, Donate Blood</h2>
+        <h1
+  className="hero-headline"
+  style={{
+    fontSize: 44,
+    fontWeight: 800,
+    lineHeight: 1.1,
+    letterSpacing: "-1.5px",
+    marginBottom: 20,
+    color: "#0A2540",
+  }}
+>
+  Be a lifesaver                                      
+  <span
+    style={{
+      display: "block",
+      color: "#D90429",
+      fontSize: 44,
+      fontWeight: 800,
+      whiteSpace: "nowrap",
+    }}
+  >
+    Help someone in need             
+  </span>
+</h1>  
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "stretch",
+                  gap: 8,
+                  background: "#E0F2FE",
+                  border: "1px solid #BAE6FD",
+                  borderRadius: 100,
+                  padding: "6px 16px", 
+                  marginBottom: 24,
+                }}
+              >
+                <span style={{ fontSize: 13 }}>🔴</span>
+                <span
+                  style={{ fontSize: 13, color: "#0369A1", fontWeight: 700 }}
+                >
+               Save Lives,donate blood  
+                </span>
+              </div> 
             <p className="text-gray-500 mt-3 text-base leading-relaxed max-w-md">
               Join our community of heroes and help make a difference in the world.
               Sign up now to start your journey as a hero!
@@ -163,7 +250,7 @@ function Register() {
             ))}
           </div>
 
-          {/* Why Join */}
+          {/* Why Join */} 
           <div className="grid grid-cols-2 mt-3 gap-3">
             {[
               ["📍", "Find nearby blood requests"],
@@ -171,7 +258,7 @@ function Register() {
               ["🕐", "Track your donation history"],
               ["❤️", "Help save lives in your community"],
             ].map(([icon, text]) => (
-              <div key={text} className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm border border-red-100">
+              <div key={text} className="flex items-center gap-3 hover:bg-red-300  bg-white rounded-xl p-3 shadow-sm border border-red-100">
                 <span className="text-lg">{icon}</span>
                 <span className="text-sm text-gray-600 font-medium">{text}</span>
               </div>
@@ -261,7 +348,7 @@ function Register() {
                       className="ml-2 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition"
                     >
                       VERIFY OTP
-                    </button>
+                    </button> 
                   )}
                   {otpVerified && (
                     <span className="ml-2 text-green-600 text-sm font-bold">✓ Verified</span>
@@ -293,7 +380,7 @@ function Register() {
             {/* Password */}
             <div className="mb-5">
               <label className="font-bold block mb-2">Password</label>
-              <div className="relative">
+              <div className="relative"> 
                 <i className="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -348,9 +435,10 @@ function Register() {
             </p>
           </div>
         </div>
-      </div>
-    </div>
-  );
+      </div> 
+    </div> 
+      </>
+     );
 }
 
 export default Register; 
