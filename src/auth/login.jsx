@@ -18,14 +18,17 @@ function Login() {
       try {
         const res = await fetch(`${BACKEND_BASE_URL}/api/auth/me`, {
           credentials: "include",
-        }); 
+        });
         if (res.ok) {
           const data = await res.json();
-          console.log("Navigating to:", data.user?.isOnboarded ? "/request" : "/profile");  
+          console.log(
+            "Navigating to:",
+            data.user?.isOnboarded ? "/request" : "/profile",
+          );
           if (data.user?.isOnboarded) {
             navigate("/request");
           } else {
-            navigate("/profile"); 
+            navigate("/profile");
           }
         }
       } catch (err) {
@@ -98,9 +101,9 @@ function Login() {
         data = { message: "Server returned invalid JSON" };
       }
 
-      console.log("Response Data:", data); 
-      console.log("Login response:", data);                     
-  if (response.ok) {
+      console.log("Response Data:", data);
+      console.log("Login response:", data);
+      if (response.ok) {
         alert(data.message);
 
         if (data.user.isOnboarded) {
@@ -122,16 +125,24 @@ function Login() {
   return (
     <div className="min-h-screen bg-red-50">
       {/* Navbar */}
-
-      <nav className="bg-white px-8 py-5 border-b border-red-100 shadow-md">
-        <div className="flex items-center">
+      {/* NAV */}
+      <nav className="bg-white px-4 sm:px-10 py-5 flex justify-between items-center shadow-md relative">
+        {/* Logo - Clickable */}
+        <div onClick={() => navigate("/")} className="cursor-pointer">
           <h1 className="text-4xl font-bold">
             <span className="text-red-500">RED</span>
-            LINK
+            <span className="text-black">LINK</span>
           </h1>
-
-          <p className="ml-4 text-gray-600">Save Lives, Donate Blood</p>
+          <p className="text-gray-600 text-sm mt-1">Blood Donor Network</p>
         </div>
+
+        {/* Back to Home */}
+        <span
+          onClick={() => navigate("/")}
+          className="cursor-pointer text-red-700 font-medium border-b-2 border-red-500 pb-1 hover:text-red-600 transition-colors duration-300"
+        >
+          Back to Home
+        </span>
       </nav>
 
       {/* Main Section */}
