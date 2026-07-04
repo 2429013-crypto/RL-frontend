@@ -49,6 +49,41 @@ export default function Navbar({
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Barlow:wght@800;900&display=swap');
 
+        /* Top announcement bar */
+        .rl-topbar {
+          background: #0A2540;
+          color: #E2E8F0;
+          font-family: 'Inter', sans-serif;
+          font-size: 12px;
+          font-weight: 600;
+          padding: 6px 32px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          flex-wrap: wrap;
+        }
+        .rl-topbar span {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .rl-topbar-right {
+          display: flex;
+          gap: 24px;
+        }
+        @media (max-width: 640px) {
+          .rl-topbar {
+            padding: 6px 16px;
+            font-size: 11px;
+            justify-content: center;
+            text-align: center;
+          }
+          .rl-topbar-right {
+            gap: 14px;
+          }
+        }
+
         .rl-shared-nav {
           position: sticky; top: 0; z-index: 100;
           background: #fff;
@@ -166,6 +201,21 @@ export default function Navbar({
         }
       `}</style>
 
+      {/* ── TOP ANNOUNCEMENT BAR ── */}
+      <div className="rl-topbar">
+        <span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6l-8-4z" fill="#C8102E" opacity="0.6"/>
+            <path d="M9 12l2 2 4-4" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          National Blood Donor Network · Integrated Health Services Portal
+        </span>
+        <span className="rl-topbar-right">
+          <span>🚨 Emergency: <strong style={{ color: "#F87171" }}>108</strong></span>
+          <span>Blood Bank Helpline: <strong style={{ color: "#F87171" }}>1910</strong></span>
+        </span>
+      </div>
+
       <nav className="rl-shared-nav">
         <div className="rl-shared-nav-inner">
 
@@ -251,4 +301,4 @@ export default function Navbar({
       </nav>
     </>
   );
-}
+} 

@@ -112,8 +112,8 @@ function Register() {
     }
   } 
 
-  return (
-    <>
+  return (  
+    <>             
       <Navbar variant="public" />
       <div className="min-h-screen bg-red-50">
       <div className="flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">
