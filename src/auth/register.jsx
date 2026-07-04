@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import care from "../assets/care.png";
 import { useState, useEffect, useRef } from "react";
 import { BACKEND_BASE_URL } from "../../config";
+import Navbar from "../components/Navbar";
 
 function Register() {
   const navigate = useNavigate();
@@ -111,64 +112,10 @@ function Register() {
     }
   } 
 
-  return (                                                    
-             <>
-    {/* TOP GOVERNMENT NOTICE BAR */}
-    <div
-      style={{
-        background: "#0A2540",
-        color: "#E2E8F0",
-        padding: "8px 24px",
-        fontSize: "12px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        borderBottom: "2px solid #0077B6",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <span>🏛️</span>
-        <span>
-          Integrated Blood Network Services • National Health Portal
-        </span>
-      </div>
-
-      <div style={{ display: "flex", gap: "16px" }}>
-        <span>Emergency Toll-free: 108</span>
-        <span>Ministry of Health Initiative</span>
-      </div>                                                            
-    </div>
-  <div className="min-h-screen bg-red-50">             
-        {/* NAV */} 
-    <nav
-  className="bg-white px-4 sm:px-3 flex justify-between items-center shadow-sm relative"
-  style={{ height: "78px" }}
-> 
-         {/* Logo */}
-       <div style={{ display:"flex", alignItems:"center", gap:14,padding:3, cursor:"pointer" }} onClick={() => navigate("/")}>
-  <div style={{ width:48, height:48, background:"#C8102E", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-    <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
-      <path d="M12 3C12 3 6 10 6 14.5a6 6 0 0012 0C18 10 12 3 12 3z" fill="#fff" opacity="0.95"/>
-      <path d="M9.5 14.5a2.5 2.5 0 005 0" stroke="#C8102E" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
-    </svg>
-  </div>
-  <div>
-    <div style={{ display:"flex", alignItems:"center", lineHeight:1 }}>      
-      <span style={{ fontFamily:"'Barlow',sans-serif", fontWeight:900, fontSize:28, color:"#C8102E", letterSpacing:3, textTransform:"uppercase" }}>RED</span>
-      <div style={{ width:2, height:26, background:"#C8102E", margin:"0 5px", borderRadius:1, opacity:0.5 }}></div>
-      <span style={{ fontFamily:"'Barlow',sans-serif", fontWeight:900, fontSize:28, color:"#111", letterSpacing:3, textTransform:"uppercase" }}>LINK</span>
-    </div>
-    <div style={{ fontFamily:"'Rajdhani',sans-serif", fontSize:10, fontWeight:600, color:"#999", letterSpacing:"0.3em", textTransform:"uppercase", marginTop:3 }}>Blood Donor Network</div>
-  </div>
-</div>                                                                                            
-  {/* Back to Home */}
-  <span
-    onClick={() => navigate("/")}
-    className="cursor-pointer text-red-700 font-medium border-b-2 border-red-500 pb-1 hover:text-red-600 transition-colors duration-300"
-  > 
-    Back to Home
-  </span>                
- </nav>                        
+  return (
+    <>
+      <Navbar variant="public" />
+      <div className="min-h-screen bg-red-50">
       <div className="flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">
         {/* LEFT */}
         <div className="hidden lg:flex lg:w-[45%] flex-col justify-center px-12 py-10 bg-red-50">

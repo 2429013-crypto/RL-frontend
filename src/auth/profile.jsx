@@ -2,6 +2,7 @@ import states from "./states.json";
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_BASE_URL } from "../../config";
+import Navbar from "../components/Navbar";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -283,107 +284,13 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-red-50">
       {/* ── NAV ── */}
-      <nav className="bg-white px-4 sm:px-10 py-5 flex justify-between items-center shadow-md relative">
-        {/* Logo */}
-        <h1 className="text-4xl font-bold">
-          <span className="text-red-500">RED</span>
-          <span className="text-black">LINK</span>
-          <p className="text-gray-600 text-sm mt-1">Blood Donor Network</p>
-        </h1>
-        <div ref={dropdownRef} className="relative flex items-center gap-3">
-          <div
-            onClick={() => setDropdownOpen((prev) => !prev)}
-            className="flex items-center gap-3 cursor-pointer"
-          >
-            <div className="text-right">
-              <p className="text-sm text-gray-500">
-                Welcome, {formData.fullName || "User"}
-              </p>
-              {progressPercentage < 100 && (
-                <p className="font-semibold text-red-600 hover:underline">
-                  Complete Your Profile
-                </p>
-              )}
-            </div>
-            <div
-              className={`w-12 h-12 rounded-full bg-white border-2 flex items-center justify-center shadow-sm transition-colors duration-200 ${
-                dropdownOpen ? "border-red-500" : "border-gray-300"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-7 h-7 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z"
-                />
-              </svg>
-            </div>
-          </div>
-
-          {dropdownOpen && (
-            <div className="absolute right-0 top-14 w-44 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50">
-              <button
-                onClick={() => {
-                  setDropdownOpen(false);
-                  navigate("/settings");
-                }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
-              >
-                {/* settings icon svg */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 text-gray-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                Settings
-              </button>
-              <div className="border-t border-gray-100" />
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-              >
-                {/* logout icon svg */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
-                  />
-                </svg>
-                Log out
-              </button>
-            </div>
-          )}
-        </div>
-      </nav>
+      <Navbar
+        variant="app"
+        userName={formData.fullName || "User"}
+        progress={progressPercentage}
+        onLogout={handleLogout}
+        onProfile={() => navigate("/profile")}
+      />
       {/* ── END NAV ── */}
 
       {/* Hero / Progress */}

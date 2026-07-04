@@ -14,7 +14,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "@fontsource-variable/barlow" ;
 
 const LOGO_SVG = (
   <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
@@ -228,20 +227,6 @@ export default function Navbar({
                         stroke="#6B7280"/>
                     </svg>
                     My Profile
-                  </button>
-
-                  <div className="rl-snav-dd-sep" />
-
-                  <button
-                    className="rl-snav-dd-item"
-                    onClick={() => { setDropdownOpen(false); navigate("/request"); }}
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                        stroke="#6B7280"/>
-                    </svg>
-                    Blood Requests
                   </button>
 
                   <div className="rl-snav-dd-sep" />
