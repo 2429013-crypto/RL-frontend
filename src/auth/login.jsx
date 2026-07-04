@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 import loginimage from "../assets/loginimage.png";
 import { BACKEND_BASE_URL } from "../../config";
+import Navbar from "../components/Navbar";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -128,14 +128,7 @@ function Login() {
       <div className="absolute bottom-0 right-0 w-md h-112 bg-rose-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
       <div className="max-w-362.5 mx-auto relative">
         {/* Navbar */}
-
-        <nav className="bg-white px-6 py-4 flex justify-between items-center shadow-sm border-b border-gray-100">
-          <h1 className="text-4xl font-bold">
-            <span className="text-red-500">RED</span>
-            <span className="text-black">LINK</span>
-            <p className="text-gray-600 text-sm mt-1">Blood Donor Network</p>
-          </h1>
-        </nav>
+        <Navbar variant="public" />
 
         {/* Main Section */}
 

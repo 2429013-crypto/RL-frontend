@@ -31,7 +31,7 @@ function Request() {
   const fetchDonors = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/requests/${id}/donors`,
+        `${BACKEND_BASE_URL}/api/requests/${id}/donors`,
         {
           credentials: "include",
         },
@@ -161,7 +161,7 @@ function Request() {
     requiredBy: "",
   });
 
-  const BACKEND_URL = "http://localhost:5000";
+  const BACKEND_URL = BACKEND_BASE_URL;
 
   console.log("Current Tab:", activeTab);
 
