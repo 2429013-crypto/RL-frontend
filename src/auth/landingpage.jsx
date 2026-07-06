@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import bloodDonateImg from "../../public/assets/bloodDonate.png";
+import bloodDonateImg from "../assets/bloodDonate.png";
 
 const steps = [
   {
