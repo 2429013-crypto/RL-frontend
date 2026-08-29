@@ -1,134 +1,74 @@
-import states from "./states.json"; 
-// import { useNavigate } from "react-router-dom";                 
-import blood from "../assets/bloodicon.png";
+import { useNavigate } from "react-router-dom"; 
 import care from "../assets/care.png";
 import { useState, useEffect, useRef } from "react";
 import { BACKEND_BASE_URL } from "../../config";
+import Navbar from "../components/Navbar";
 
-function Register() {                                          
-  // const navigate = useNavigate();                                    
+function Register() {
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
-  function togglePassword() {
-    setShowPassword(!showPassword);
-  }
-  const [showOTP, setShowOTP] = useState(false);
-  function toggleOTP() {
-    setShowOTP(!showOTP);
-  } 
-  const [timer, setTimer] = useState(180); // OTP expires after 3 minutes
-  const [resendTimer, setResendTimer] = useState(30); // Resend cooldown
+  const [timer, setTimer] = useState(180);
+  const [resendTimer, setResendTimer] = useState(30);
   const [otpSent, setOtpSent] = useState(false);
   const otpRefs = useRef([]);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [otpVerified, setOtpVerified] = useState(false);
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [district, setDistrict] = useState("");
-  const [pincode, setPincode] = useState(""); 
-  const hasUserStartedTyping =
-  email ||
-  password || 
-  otp  ||                                                                     
-  phone ||
-  selectedState ||
-  district ||
-  pincode;                             
   const [token, setToken] = useState("");
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
 
+  const hasUserStartedTyping = email || password || otp;
 
   useEffect(() => {
-    // useEffect() runs whenever one of its dependencies changes like the OTP sent or the timer
-    let interval;
-
+    let interval;                                
     if (otpSent && timer > 0) {
-      interval = setInterval(() => {
-        // OTP expiry timer
-
-        setTimer((prev) => prev - 1);
-      }, 1000);
+      interval = setInterval(() => setTimer((p) => p - 1), 1000);
     }
-
     return () => clearInterval(interval);
-  }, [otpSent, timer]);                                            
+  }, [otpSent, timer]);
+
   useEffect(() => {
-    // Resend button timer
     let interval;
-
     if (otpSent && resendTimer > 0) {
-      interval = setInterval(() => {
-        setResendTimer((prev) => prev - 1);
-      }, 1000);
+      interval = setInterval(() => setResendTimer((p) => p - 1), 1000);
     }
-
     return () => clearInterval(interval);
   }, [otpSent, resendTimer]);
 
-  // API calling for handleSendOTP
   async function handleSendOTP() {
-    try { 
-      if (!email.trim()) {
-  alert("Email is required");
-  return;
-} 
- const emailRegex =
-  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-if (!/\S+@\S+\.\S+/.test(email)) {
-  alert("Please enter a valid email address");
-  return;
-} 
+    if (!email.trim()) { alert("Email is required"); return; }
+    if (!/\S+@\S+\.\S+/.test(email)) { alert("Please enter a valid email address"); return; }
+    try {
       const response = await fetch(`${BACKEND_BASE_URL}/api/auth/send-otp`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
-      console.log("RESPONSE :: ", response);
-
       const data = await response.json();
-      // const text = await response.text();
-      // console.log("Response body:", text);
-
       if (response.ok) {
         alert(data.message || "OTP sent successfully!");
         setOtpSent(true);
-        setTimer(180); // expires OTP after every 3 min
-        setResendTimer(30); // Resend enabled after 30 sec
+        setTimer(180);
+        setResendTimer(30);
       } else {
         alert(data.message || "Failed to send OTP");
       }
-    } catch (error) {
-      console.error("Error sending OTP:", error);
+    } catch {
       alert("Something went wrong!");
     }
   }
-  // API calling for handleVerifyOTP
+
   async function handleVerifyOTP() {
     try {
       const response = await fetch(`${BACKEND_BASE_URL}/api/auth/verify-otp`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          otp,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
       });
-      console.log("RESPONSE :: ", response);
-
       const data = await response.json();
-      // const text = await response.text();
-      // console.log("Response body:", text);
-
       if (response.ok) {
-        // localStorage.setItem("registerToken", data.token);
-
         setToken(data.verificationToken);
         alert(data.message || "OTP verified successfully!");
         setOtpVerified(true);
@@ -137,198 +77,192 @@ if (!/\S+@\S+\.\S+/.test(email)) {
       } else {
         alert(data.message || "Invalid OTP");
       }
-    } catch (error) {
-      console.error("Error sending OTP:", error);
+    } catch {
       alert("Something went wrong!");
     }
   }
-  {
-    /*API calling for handling registration */
-  }
+
   async function handleRegister() {
     let newErrors = {};
-    // validation code ...
-    if (!email.trim()) {
-      newErrors.email = "Email is required";
-    }
-
-    if (!otp.trim()) {
-      newErrors.otp = "OTP is required";
-    }
-
-    if (!phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    }
-
-    if (!password.trim()) {
-      newErrors.password = "Password is required";
-    }
-
-    if (!selectedState) {
-      newErrors.state = "Please select a state";
-    }
-
-    if (!district) {
-      newErrors.district = "Please select a district";
-    }
-
-    if (!pincode.trim()) {
-      newErrors.pincode = "Pincode is required";
-    }
-
+    if (!email.trim()) newErrors.email = "Email is required";
+    if (!otp.trim()) newErrors.otp = "OTP is required";
+    if (!otpVerified) newErrors.otp = "Please verify your OTP first";
+    if (!password.trim()) newErrors.password = "Password is required";
+    else if (password.length < 6) newErrors.password = "Password must be at least 6 characters";
+    else if (!/^[a-zA-Z0-9]+$/.test(password)) newErrors.password = "Only letters and numbers allowed";
     setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+    if (!token) { alert("Please verify OTP first."); return; }
 
-    if (Object.keys(newErrors).length > 0) {
-      return;
-    }
-    // const token = localStorage.getItem("registerToken");
-    // check whether the OTP token exists
-
-    if (!token) {
-      alert("Please verify OTP first.");
-      return;
-    }
     try {
       const response = await fetch(`${BACKEND_BASE_URL}/api/auth/register`, {
         method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({                               
-          email,
-          phoneNumber: phone, 
-          password,
-          state: selectedState,
-           districtName: district,
-          pinCode: pincode, 
-          verificationToken: token,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, verificationToken: token }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        alert("Registration Successful!");
-
-        // Optional: remove token after successful registration
-        localStorage.removeItem("registerToken");
+        alert("Registration Successful! Please login to continue.");
+        navigate("/login");
       } else {
         alert(data.message);
       }
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong!");
+    } catch {                              
+      alert("Something went wrong!");       
     }
-  }
+  } 
 
-  return (     
-    <div className="min-h-screen  bg-red-50">
-      <nav className="bg-white px-4 sm:px-10 py-5 flex justify-between items-center shadow-md">
-        <h1 className=" text-4xl font-bold"> 
-          <span className="text-red-500">RED</span><span className="text-black">LINK</span>  
-          <p className="text-gray-600 text-sm mt-1">Blood Donor Network </p>
-        </h1>
-      </nav>
-      {/* Main Section */}
-      <div className="flex flex-col lg:flex-row mt-8 mb-2">
-        {/*  Left Section */}
-        <div className="hidden lg:block lg:w-1/2 p-8 lg:p-16">
-          <h1 className="text-5xl font-bold ">
-            Be a<span className="text-red-500"> Life Saver </span>
-          </h1>
-          <h2 className="text-xl font-bold mt-1">Save Lives, Donate Blood</h2>
-          <p className="text-gray-600 text-1xl mt-3">
-            Join our community of heroes and help make a difference in the
-            world. Sign up now to start your journey as a hero!
-          </p>
-          <img
-            src={blood}
-            alt="Blood Donation"
-            className="w-24 sm:w-32 mx-auto mb-8"
-          />
-          <div className="bg-red-100 rounded-3xl shadow-lg p-8 w-full max-w-md mt-10 mx-auto">
-            <img
-              src={care}
-              alt="Security"
-              className="w-full max-w-sm mx-auto mb-10"
-            />
-            <h2 className="font-bold text-lg">
-              Your information is safe with us
-            </h2>
-
-            <p className="text-gray-500 text-lg mt-3">
-              We use advanced security to protect your data and privacy.
+  return (  
+    <>             
+      <Navbar variant="public" />
+      <div className="min-h-screen bg-red-50">
+      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">
+        {/* LEFT */}
+        <div className="hidden lg:flex lg:w-[45%] flex-col justify-center px-12 py-10 bg-red-50">
+          <div>
+        <h1
+  className="hero-headline"
+  style={{
+    fontSize: 44,
+    fontWeight: 800,
+    lineHeight: 1.1,
+    letterSpacing: "-1.5px",
+    marginBottom: 20,
+    color: "#0A2540",
+  }}
+>
+  Be a lifesaver                                      
+  <span
+    style={{
+      display: "block",
+      color: "#D90429",
+      fontSize: 44,
+      fontWeight: 800,
+      whiteSpace: "nowrap",
+    }}
+  >
+    Help someone in need             
+  </span>
+</h1>  
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "stretch",
+                  gap: 8,
+                  background: "#E0F2FE",
+                  border: "1px solid #BAE6FD",
+                  borderRadius: 100,
+                  padding: "6px 16px", 
+                  marginBottom: 24,
+                }}
+              >
+                <span style={{ fontSize: 13 }}>🔴</span>
+                <span
+                  style={{ fontSize: 13, color: "#0369A1", fontWeight: 700 }}
+                >
+               Save Lives,donate blood  
+                </span>
+              </div> 
+            <p className="text-gray-500 mt-3 text-base leading-relaxed max-w-md">
+              Join our community of heroes and help make a difference in the world.
+              Sign up now to start your journey as a hero!
             </p>
           </div>
+
+          {/* Illustration in light red box */}
+          {/* <div className="bg-red-100 rounded-3xl shadow-md p-6 flex justify-center"> */}
+          <img src={care} alt="Donate Blood" className="w-56" />
+          {/* // </div> */}
+
+          {/* 3 Steps */}
+          <div className="bg-white border border-red-100 rounded-2xl p-5 shadow-sm">
+            <p className="font-bold text-sm text-gray-800 mb-4">🚀 How It Works — 3 Simple Steps</p>
+            {[
+              { num: 1, title: "Create Your Account", desc: "Register with your email, verify with OTP and set a secure password." },
+              { num: 2, title: "Complete Your Profile", desc: "Add your blood group, health info and location so we can match you with requests." },
+              { num: 3, title: "Start Saving Lives", desc: "Receive emergency alerts nearby and respond to blood donation requests instantly." },
+            ].map(({ num, title, desc }, i, arr) => (
+              <div key={num}>
+                <div className="flex gap-3">
+                  <div className="shrink-0 w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center font-black text-sm">
+                    {num}
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-gray-800">{title}</p>
+                    <p className="text-xs text-gray-500 mt-1 leading-relaxed">{desc}</p>
+                  </div>
+                </div>
+                {i < arr.length - 1 && <div className="w-px h-4 bg-red-100 ml-4 my-3" />}
+              </div>
+            ))}
+          </div>
+
+          {/* Why Join */} 
+          <div className="grid grid-cols-2 mt-3 gap-3">
+            {[
+              ["📍", "Find nearby blood requests"],
+              ["🔔", "Get emergency notifications"],
+              ["🕐", "Track your donation history"],
+              ["❤️", "Help save lives in your community"],
+            ].map(([icon, text]) => (
+              <div key={text} className="flex items-center gap-3 hover:bg-red-300  bg-white rounded-xl p-3 shadow-sm border border-red-100">
+                <span className="text-lg">{icon}</span>
+                <span className="text-sm text-gray-600 font-medium">{text}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        {/* Right Section */}
-        <div className="w-full lg:w-1/2 flex justify-center px-4">
-          <div className="bg-white shadow-xl rounded-3xl p-6 sm:p-8 lg:p-10 w-full max-w-3xl">
-            <h1 className="text-3xl sm:text-5xl font-bold text-red-600">SIGN UP</h1>
-            <p className="text-gray-500 mt-3 mb-5">
-              Fill in the details below to register
-            </p>
 
-            <div className="flex flex-col sm:flex-row mt-3 gap-4 items-start sm:items-center">
+        {/* RIGHT */}
+        <div className="lg:w-[55%] flex items-center justify-center px-12 py-10">
+          <div className="bg-white shadow-xl rounded-3xl p-12 w-full max-w-2xl border border-gray-100">
+            <h1 className="text-4xl font-bold text-red-600">SIGN UP</h1>
+            <p className="text-gray-500 mt-2 mb-6 text-sm">Fill in the details below to register</p>
+            <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-5">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                <i className="fa-solid fa-droplet text-red-500"></i>
+                Join the RedLink Community
+              </h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Register today and help connect blood donors with patients in need.
+              </p>
+            </div>
+
+            {/* Email */}
+            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center mb-5">
               <div className="flex flex-col w-full">
-                {/* Email */}
-
-                <label className="font-bold">Email</label>
-                <div className="relative mt-3 gap-2 w-full">
-                  <i
-                    className="  
-            fa-solid fa-envelope
-           absolute
-            left-4 
-            top-1/2                                     
-            -translate-y-1/2
-            text-gray-500"
-                  ></i>
+                <label className="font-bold mb-2">Email</label>
+                <div className="relative">
+                  <i className="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                   <input
                     type="email"
-                   required placeholder="Enter Your Email" 
+                    placeholder="Enter Your Email"
                     value={email}
                     disabled={otpVerified}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-
-                      setErrors((prev) => ({
-                        ...prev,
-                        email: "",
-                      }));
-                    }}
-                    className={`w-full border rounded-xl p-4 pl-12 ${
-                      otpVerified ? "bg-gray-100 cursor-not-allowed" : ""
-                    }`}
+                    onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: "" })); }}
+                    className={`w-full border rounded-xl p-3.5 pl-11 text-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-100 ${otpVerified ? "bg-gray-100 cursor-not-allowed text-gray-400" : "border-gray-200"}`}
                   />
                 </div>
               </div>
-              {/* Send OTP Button */}
-
               {!otpSent && !otpVerified && (
                 <button
                   onClick={handleSendOTP}
-                  className="bg-red-600 text-white p-2 rounded-xl text-sm mt-5 hover:bg-red-700 transition"
+                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-xl text-sm font-bold transition whitespace-nowrap mt-6"
                 >
-                  SEND OTP
+                  <i className="fa-solid fa-paper-plane"></i> SEND OTP
                 </button>
               )}
             </div>
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-red-500 text-xs mb-3">{errors.email}</p>}
 
-            {/* OTP Input */}
-            <div className="flex flex-col sm:flex-row my-5 gap-4">
-              <div className="flex flex-col w-full">
-                <label className="fSont-bold">OTP Verification</label>
-
-                <div className="mt-3">
+            {/* OTP — only shows after Send OTP clicked */}
+            {(otpSent || otpVerified) && (
+              <div className="mb-5">
+                <label className="font-bold block mb-2">OTP Verification</label>
+                <div className="flex gap-2 items-center">
                   <div className="flex gap-2">
                     {[0, 1, 2, 3, 4, 5].map((index) => (
-                      <input 
+                      <input
                         key={index}
                         ref={(el) => (otpRefs.current[index] = el)}
                         type="text"
@@ -337,294 +271,121 @@ if (!/\S+@\S+\.\S+/.test(email)) {
                         disabled={otpVerified}
                         onChange={(e) => {
                           let value = e.target.value.replace(/[^0-9]/g, "");
-
                           let newOtp = otp.split("");
                           newOtp[index] = value;
                           setOtp(newOtp.join(""));
-
-                          setErrors((prev) => ({
-                            ...prev,
-                            otp: "",
-                          }));
-
-                          if (value && index < 5) {
-                            otpRefs.current[index + 1].focus();
-                          } 
-                        }}                                      
-                          onKeyDown={(e) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpRefs.current[index - 1].focus();
-    }
-  }}
-   className={`w-10 h-10 sm:w-12 sm:h-12 border rounded-lg text-center text-lg sm:text-xl ${
-                          otpVerified ? "bg-gray-100 cursor-not-allowed" : ""
-                        }`}
+                          setErrors((p) => ({ ...p, otp: "" }));
+                          if (value && index < 5) otpRefs.current[index + 1].focus();
+                        }}
+                        onKeyDown={(e) => { if (e.key === "Backspace" && !otp[index] && index > 0) otpRefs.current[index - 1].focus(); }}
+                        onPaste={(e) => {
+                          e.preventDefault();
+                          const pasted = e.clipboardData.getData("text").replace(/[^0-9]/g, "").slice(0, 6);
+                          setOtp(pasted);
+                          if (otpRefs.current[pasted.length - 1]) otpRefs.current[pasted.length - 1].focus();
+                        }}
+                        className={`w-11 h-11 border rounded-lg text-center text-lg font-bold focus:outline-none focus:border-red-400 transition
+                          ${otpVerified ? "bg-green-50 border-green-400 text-green-600" : "border-gray-200"}`}
                       />
                     ))}
                   </div>
-
-                  {errors.otp && (
-                    <p className="text-red-500 text-sm mt-1">{errors.otp}</p>
+                  {!otpVerified && otpSent && (
+                    <button
+                      onClick={handleVerifyOTP}
+                      className="ml-2 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition"
+                    >
+                      VERIFY OTP
+                    </button> 
+                  )}
+                  {otpVerified && (
+                    <span className="ml-2 text-green-600 text-sm font-bold">✓ Verified</span>
                   )}
                 </div>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:w-40">
-                {!otpVerified && otpSent && (
-                  <button
-                    onClick={handleVerifyOTP}
-                    className="bg-green-600 text-white p-2 rounded-xl text-sm hover:bg-green-700 transition"
-                  >
-                    VERIFY OTP
-                  </button>
+                <div className="flex justify-between items-center mt-2">
+                  <p className="text-gray-400 text-xs">Enter the 6-digit code sent to your email</p>
+                  {otpSent && !otpVerified && (
+                    <button
+                      onClick={handleSendOTP}
+                      disabled={resendTimer > 0}
+                      className={`text-xs font-semibold ${resendTimer > 0 ? "text-gray-400" : "text-red-500 hover:underline"}`}
+                    >
+                      {resendTimer > 0
+                        ? `Resend in 00:${String(resendTimer).padStart(2, "0")}`
+                        : "Resend OTP"}
+                    </button>
+                  )}
+                </div>
+                {otpSent && !otpVerified && (
+                  <p className="text-red-500 text-xs mt-1">
+                    OTP expires in: {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, "0")}
+                  </p>
                 )}
-
-                {!otpVerified && otpSent && (
-                  <button
-                    onClick={handleSendOTP}
-                    disabled={resendTimer > 0}
-                    className={`p-2 rounded-xl text-sm transition ${
-                      resendTimer > 0
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-blue-600 text-white hover:bg-blue-700"
-                    }`}
-                  >
-                    {resendTimer > 0
-                      ? `RESEND OTP (${resendTimer}s)`
-                      : "RESEND OTP"}
-                  </button>
-                )}
+                {errors.otp && <p className="text-red-500 text-xs mt-1">{errors.otp}</p>}
               </div>
-            </div>
-            {/* {otpSent && (                                   
-                <p className="text-red-600 text-sm">
-                  OTP expires in :{Math.floor(timer / 60)}:
-                  {(timer % 60).toString().padStart(2, "0")}
-                </p>
-              )}   */}
-            {otpSent && !otpVerified && (
-              <p className="text-red-600 text-sm mt-2">
-                OTP expires in : {Math.floor(timer / 60)}:
-                {(timer % 60).toString().padStart(2, "0")}
-              </p>
-            )}
-            {/*API calling for Phone Number*/}
-            <label className="font-bold">Phone Number</label>
-            <div className="relative mt-5 mb-5">
-              <i
-                className="
-        fa-solid fa-phone 
-        absolute
-        left-4
-        top-1/2 
-        -translate-y-1/2
-        text-gray-500"
-              ></i>
-              <input
-                type="text"
-                placeholder="Enter your phone number"
-                value={phone}
-                onChange={(e) => {
-                  setPhone(e.target.value);
-
-                  setErrors((prev) => ({
-                    ...prev,
-                    phone: "",
-                  }));
-                }}
-                className="w-full border rounded-xl p-4 pl-12"
-              />
-            </div>
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
             )}
 
-            <label className="font-bold">Password</label>
-
-            <div className="relative  mt-5 mb-5">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-
-                  setErrors((prev) => ({
-                    ...prev,
-                    password: "",
-                  }));
-                }}
-                className="w-full border rounded-lg p-3 pr-12"
-              />
-
-              <i
-                className={
-                  showPassword
-                    ? "fa-solid fa-eye-slash absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
-                    : "fa-solid fa-eye absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
-                }
-                onClick={togglePassword}
-              ></i>
-            </div>
-            {errors.password && (
-              <p className="text-red-500 text-sm ">{errors.password}</p>
-            )}
-            <div className="flex flex-col sm:flex-row gap-4 mt-5">
-              {/* State */}
-              <div className="flex-1 flex-col">
-                <div className="relative">
-                  <i
-                    className="
-                     fa-solid fa-map
-                     absolute
-                    left-4
-                     top-1/2
-                   -translate-y-1/2
-                   text-gray-500"
-                  ></i>
-
-                  <select
-                    value={selectedState}
-                    onChange={(e) => {
-                      setSelectedState(e.target.value);
-
-                      setErrors((prev) => ({
-                        ...prev,
-                        state: "",
-                      }));
-                    }}
-                    className="                                                    
-                       w-full
-                 border
-                  rounded-lg
-                      p-3
-                     pl-12"
-                  >
-                    <option value="">Select State</option>
-
-                    {states.map((state) => (
-                      <option key={state} value={state}>
-                        {state}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {errors.state && (
-                  <p className="text-red-500 text-sm mt-1">{errors.state}</p>
-                )}
+            {/* Password */}
+            <div className="mb-5">
+              <label className="font-bold block mb-2">Password</label>
+              <div className="relative"> 
+                <i className="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: "" })); }}
+                  className="w-full border border-gray-200 rounded-xl p-3.5 pl-11 pr-11 text-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-100"
+                />
+                <i
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"} absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer`}
+                ></i>
               </div>
-
-              {/* District */}
-              <div className="flex-1 flex-col">
-                <div className="relative">
-                  <i
-                    className="
-            fa-solid fa-city
-            absolute
-            left-4
-            top-1/2
-            -translate-y-1/2
-            text-gray-500"
-                  ></i>
-
-                  <select
-                    value={district}
-                    onChange={(e) => {
-                      setDistrict(e.target.value);
-
-                      setErrors((prev) => ({
-                        ...prev,
-                        district: "",
-                      }));
-                    }}
-                    className="
-    w-full
-    border
-    rounded-lg
-    p-3
-    pl-12"
-                  >
-                    <option value="">Select District</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                    <option value="E">E</option>
-                  </select>
-                </div>
-
-                {errors.district && (
-                  <p className="text-red-500 text-sm mt-1">{errors.district}</p>
-                )}
-              </div>
-
-              {/* Pincode */}
-              <div className="flex-1 flex-col">
-                <div className="relative">
-                  <i
-                    className=" 
-            fa-solid fa-location-dot
-            absolute                               
-            left-4 
-            top-1/2
-            -translate-y-1/2
-            text-gray-500"
-                  ></i>
-                  <input
-                    type="text"
-                    placeholder="Pincode"
-                    value={pincode}
-                    onChange={(e) => {
-                      setPincode(e.target.value);
-
-                      setErrors((prev) => ({
-                        ...prev,
-                        pincode: "",
-                      }));
-                    }}
-                    className="
-    w-full
-    border
-    rounded-lg
-    p-3
-    pl-12"
-                  />
-                </div>
-
-                {errors.pincode && (
-                  <p className="text-red-500 text-sm mt-1">{errors.pincode}</p>
-                )}
-              </div>
+              <p className="text-gray-400 text-xs mt-1">⚠️ Min 6 characters — letters or numbers only</p>
+              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
             </div>
-            <div className="flex justify-center mt-10"> 
-  <button
-    onClick={handleRegister}
-    disabled={!hasUserStartedTyping}
-    className={`w-full py-4 sm:py-5 rounded-xl text-xl sm:text-2xl mt-8 text-white transition
-      ${
-        hasUserStartedTyping
-          ? "bg-red-600 hover:bg-red-700" 
-          : "bg-gray-400 cursor-not-allowed"
-      }`}
-  >                       
-
-                <i className="fa-solid fa-user-plus"></i>
-                REGISTER
-              </button>
+            {/* Security note */}
+            <div className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-xl p-3 mb-5">
+              <span className="text-red-400 mt-0.5">🛡️</span>
+              <p className="text-xs text-gray-500">Your information is securely stored and used only for blood donation purposes.</p>
             </div>
-            <p className="flex flex-wrap justify-center mt-4 text-center">
-              Already have an account?
-              <span 
-                // onClick={() => navigate("/login")}
 
-              className="text-red-600 font-bold ml-2 cursor-pointer hover:bg-red-300 transition">
+            {/* Register Button */}
+            <button
+              onClick={handleRegister}
+              disabled={!hasUserStartedTyping}
+              className={`w-full py-4 rounded-xl text-lg font-bold transition ${hasUserStartedTyping
+                  ? "bg-red-600 hover:bg-red-700 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+            >
+              <i className="fa-solid fa-user-plus mr-2"></i>
+              REGISTER
+            </button>
+
+            <p className="text-center text-xs text-gray-400 mt-4">
+              By creating an account, you agree to our{" "}
+              <span className="text-red-500 font-semibold cursor-pointer">Terms of Service</span>{" "}
+              and{" "}
+              <span className="text-red-500 font-semibold cursor-pointer">Privacy Policy</span>
+            </p>
+
+            {/* Already have account — bottom */}
+            <p className="flex justify-center mt-5 text-sm text-gray-500">
+              Already have an account?{" "}
+              <span
+                onClick={() => navigate("/login")}
+                className="text-red-600 font-bold ml-2 cursor-pointer hover:underline"
+              >
                 Login
-              </span> 
+              </span>
             </p>
           </div>
         </div>
-      </div>
-    </div>
-  );
+      </div> 
+    </div> 
+      </>
+     );
 }
-export default Register;
+
+export default Register; 

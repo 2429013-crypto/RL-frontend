@@ -1,19 +1,51 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Register from "./auth/register"; 
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import Login from "./auth/login";
-function App() { 
-  return (  
-        <BrowserRouter>
-      <Routes> 
-                <Route path="/" element={<Register />} />
-   <Route path="/register" element={<Register />} />
+import Register from "./auth/register";
+import Profile from "./auth/profile";
+import Request from "./request/Request";
+import ForgotPassword from "./auth/forgot-password";
+import ProtectedRoute from "./components/ProtectedRoute";  
+import Landing from "./auth/landingpage";  //added 
+
+
+function App() {    
+  return (
+    <BrowserRouter> 
+      <Routes>
+        {/* Open Register First */} 
+        <Route path="/" element={<Landing />} />
+
+         {/* <Route path="/" element={<Navigate to="/register" />} /> */}
+
+        {/* Public Routes */}
+
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-      </Routes> 
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        {/* Protected Routes */}
+        
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute> 
+          }
+        />
+
+        <Route
+          path="/request"
+          element={
+            <ProtectedRoute>
+              <Request />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </BrowserRouter>
-  //  <> 
-//<Register />    
-//</>
-    );
-}
+  );
+} 
 
 export default App;
